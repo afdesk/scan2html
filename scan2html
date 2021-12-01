@@ -11,10 +11,10 @@ Options:
   -h, --help    Show usage.
 Examples:
   # Scan `alpine:latest` image
-  trivy scan2htmlfile image alpine:latest result.html
+  trivy scan2html image alpine:latest result.html
 
   # Scan local folder
-  trivy scan2htmlfile fs . result.html
+  trivy scan2html fs . result.html
 EOS
   exit
 }
