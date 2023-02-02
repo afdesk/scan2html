@@ -1,11 +1,11 @@
 name: "scan2html"
 repository: github.com/malikovmm/scan2html
-version: "0.0.3"
+version: "0.0.4"
 usage: scan targets into a html file
 description: |-
   A Trivy plugin that scans and outputs the results to a html file.
   trivy scan2html [-h,--help] command target filename
 platforms:
   -
-    uri: https://github.com/malikovmm/scan2html/releases/download/v0.0.3/scan2html.tar.gz
+    uri: https://github.com/malikovmm/scan2html/releases/download/v0.0.4/scan2html.tar.gz
     bin: ./scan2html
