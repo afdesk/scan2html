@@ -127,6 +127,14 @@
       background-color: #f1f1f1;
     }
 
+    .pkg-name {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 100%;
+      height: 1.2em;
+      white-space: nowrap;
+    }
+
     .header__title {
       font-size: 24px;
       text-align: center;
