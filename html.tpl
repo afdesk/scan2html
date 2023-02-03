@@ -123,43 +123,6 @@
       align-items: center;
 
     }
-
-    .filter_bar__filter_sev {
-      position: relative;
-      min-width: 200px;
-    }
-
-    .filter_bar__filter_sev select {
-      -webkit-appearance: none;
-      padding: 12px 40px 13px 12px;
-      width: 100%;
-      border: 1px solid #e8eaed;
-      background: #fff;
-      box-shadow: 0 1px 3px -2px #9098a9;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 16px;
-      transition: all 150ms ease;
-    }
-
-    .filter_bar__filter_sev select:required:invalid {
-      color: #5a667f;
-    }
-
-    .filter_bar__filter_sev select option {
-      color: #223254;
-    }
-
-    .filter_bar__filter_sev select option[value=""][disabled] {
-      display: none;
-    }
-
-    .filter_bar__filter_sev select:focus {
-      outline: none;
-      border-color: #07f;
-      box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.2);
-    }
-
     .filterable:hover {
       background-color: #f1f1f1;
     }
@@ -255,9 +218,6 @@
       const filterBar = document.querySelector('.filter_bar');
 
       const nameFilter = filterBar.querySelector('.filter_bar__filter_name');
-      const vulnFilter = filterBar.querySelector('.filter_bar__filter_vuln');
-      const sevFilter = filterBar.querySelector('.filter_bar__filter_sev_select');
-      const instVerFilter = filterBar.querySelector('.filter_bar__filter_inst_ver');
 
       const pkgNameCells = document.querySelectorAll('.pkg-name'); // all tables
       const vulnCells = document.querySelectorAll('.vuln'); // all tables
@@ -267,9 +227,6 @@
       const filterable = document.querySelectorAll('.filterable');
       function applyFilters(
         nextNameFilterValue,
-        nextVulnFilterValue,
-        nextSevFilterValue,
-        nextInstVerFilterValue,
       ) {
         filterable.forEach(f => {
           const pkgNameCell = f.querySelector('.pkg-name');
@@ -281,69 +238,17 @@
           const vulnCellValue = vulnCell.textContent || vulnCell.innerText;
           const severityCellValue = severityCell.textContent || severityCell.innerText;
           const pkgVersionCellValue = pkgVersionCell.textContent || pkgVersionCell.innerText;
-
           const condition =
-            (!nextNameFilterValue || pkgNameCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) &&
-            (!nextVulnFilterValue || vulnCellValue.toUpperCase().indexOf(nextVulnFilterValue.toUpperCase()) > -1) &&
-            (!nextSevFilterValue || severityCellValue.toUpperCase().indexOf(nextSevFilterValue.toUpperCase()) > -1) &&
-            (!nextInstVerFilterValue || pkgVersionCellValue.toUpperCase().indexOf(nextInstVerFilterValue.toUpperCase()) > -1);
-          console.log(
-            {
-              nextNameFilterValueBoolean: (!nextNameFilterValue || pkgNameCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1),
-              nextNameFilterValue,
-              pkgNameCellValue,
-              nextVulnFilterValueBoolean: (!nextVulnFilterValue || vulnCellValue.toUpperCase().indexOf(nextVulnFilterValue.toUpperCase()) > -1),
-              nextVulnFilterValue,
-              vulnCellValue,
-              nextSevFilterValueBoolean: (!nextSevFilterValue || severityCellValue.toUpperCase().indexOf(nextSevFilterValue.toUpperCase()) > -1),
-              nextSevFilterValue,
-              severityCellValue,
-              nextInstVerFilterValueBoolean: (!nextInstVerFilterValue || pkgVersionCellValue.toUpperCase().indexOf(nextInstVerFilterValue.toUpperCase()) > -1),
-              nextInstVerFilterValue,
-              pkgVersionCellValue,
-            });
+            (!nextNameFilterValue || pkgNameCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) ||
+            (!nextNameFilterValue || vulnCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) ||
+            (!nextNameFilterValue || severityCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) ||
+            (!nextNameFilterValue || pkgVersionCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1);
           if (condition) f.style.display = '';
           else f.style.display = 'none';
         })
       }
       nameFilter.addEventListener('keyup', (e) => {
-        const nameFilterValue = nameFilter.value;
-        const vulnFilterValue = vulnFilter.value;
-        const sevFilterValue = sevFilter.value;
-        const instVerFilterValue = instVerFilter.value;
-        console.log({
-          nameFilterValue,
-          vulnFilterValue,
-          sevFilterValue,
-          instVerFilterValue,
-        })
-        applyFilters(e.target.value,
-          vulnFilterValue,
-          sevFilterValue,
-          instVerFilterValue,)
-      })
-      vulnFilter.addEventListener('keyup', (e) => {
-        const nameFilterValue = nameFilter.value;
-        const sevFilterValue = sevFilter.value;
-        const instVerFilterValue = instVerFilter.value;
-        applyFilters(nameFilterValue, e.target.value, sevFilterValue,
-          instVerFilterValue)
-      })
-      sevFilter.addEventListener('change', (e) => {
-        const nameFilterValue = nameFilter.value;
-        const vulnFilterValue = vulnFilter.value;
-        const instVerFilterValue = instVerFilter.value;
-        console.log('e.target.value', e.target.value)
-        applyFilters(nameFilterValue, vulnFilterValue, e.target.value, instVerFilterValue)
-      })
-      instVerFilter.addEventListener('keyup', (e) => {
-        const nameFilterValue = nameFilter.value;
-        const vulnFilterValue = vulnFilter.value;
-        const sevFilterValue = sevFilter.value;
-        applyFilters(nameFilterValue,
-          vulnFilterValue,
-          sevFilterValue,
-          e.target.value)
+        applyFilters(e.target.value)
       })
     });
   </script>
@@ -352,24 +257,8 @@
 <body>
   <h1>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now }}</h1>
   <div class="filter_bar">
-    <input type="text" placeholder="Search for packages.." title="Type in a package"
+    <input type="text" placeholder="Search.." title="Search by package, vulnerability id, severity, installed version"
       class="filter_bar__filter_name search">
-    <input type="text" placeholder="Search for vulnerabitily ID.." title="Type in a vulnerabitily ID"
-      class="filter_bar__filter_vuln search">
-
-
-    <label class="filter_bar__filter_sev" for="slct">
-      <select class="filter_bar__filter_sev_select" id="slct" required="required">
-        <option value="">ALL</option>
-        <option value="UNKNOWN">UNKNOWN</option>
-        <option value="LOW">LOW</option>
-        <option value="MEDIUM">MEDIUM</option>
-        <option value="HIGH">HIGH</option>
-        <option value="CRITICAL">CRITICAL</option>
-      </select>
-    </label>
-    <input type="text" placeholder="Search for installed version.." title="Type in a version"
-      class="filter_bar__filter_inst_ver search">
   </div>
   {{- range . }}
   <div class="header">
