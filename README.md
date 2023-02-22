@@ -17,3 +17,19 @@ Examples:
   # Scan local folder
   trivy scan2html fs . result.html
 ```
+
+## Build
+
+```
+  yarn
+  yarn build
+```
+
+## Release
+
+```
+  git commit -m "..."
+  git tag v0.0.0
+  git push origin main
+  git push origin v0.0.0
+```

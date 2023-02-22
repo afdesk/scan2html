@@ -3,7 +3,7 @@
 # help
 function help() {
   cat << EOS >&2
-scan2html v0.0.6
+scan2html v0.0.5
 
 Usage: trivy scan2html [-h,--help] command target filename
  A Trivy plugin that scans and output the results to a html file.
