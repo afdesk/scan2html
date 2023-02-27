@@ -26,10 +26,5 @@ Examples:
 ```
 
 ## Release
-
-```
-  git commit -m "..."
-  git tag v0.0.0
-  git push origin main
-  git push origin v0.0.0
-```
+To release, change the version in plugin.yml and push the changes
+When released, all the words "\_\_VERSION__" in all files except .md will be replaced with the release version from plugin.yaml

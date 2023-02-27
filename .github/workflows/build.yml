@@ -1,8 +1,7 @@
 name: 'Build'
-on:  
-  push:
-    tags:
-      - '*'
+
+on: [push]
+
 jobs:
   release-content:
     name: 'Create GitHub Release'
@@ -12,6 +11,35 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Run read-yaml action
+        id: yaml-data
+        uses: jbutcher5/read-yaml@main
+        with:
+          file: './plugin.yaml'
+          key-path: '["version"]'
+
+      - name: Display read-yaml output
+        run: echo "${{ steps.yaml-data.outputs.data }}"
+      - uses: mukunku/tag-exists-action@v1.2.0
+        id: checkTag
+        with: 
+          tag: v${{steps.yaml-data.outputs.data}}
+
+      - run: echo ${{ steps.checkTag.outputs.exists }}
+      - name: Create tag v${{steps.yaml-data.outputs.data}}
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: v${{steps.yaml-data.outputs.data}}
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v3
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        with:
+          find: "__VERSION__"
+          replace: ${{steps.yaml-data.outputs.data}}
+          regex: false
+          exclude: "*.md"
       - name: Use Node ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
@@ -21,10 +49,10 @@ jobs:
       - name: Build
         run: yarn build
       - name: Move
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
         run: mv dist/html.tpl .
-      - name: Test
-        run: ls
-      - name: Compress action step
+      - name: Compress
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
@@ -36,6 +64,7 @@ jobs:
           outPath: scan2html.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
         with:
           files: scan2html.tar.gz
+          tag_name: v${{steps.yaml-data.outputs.data}}
