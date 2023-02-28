@@ -6,11 +6,34 @@ on:
       - 'plugin.yaml'
 
 jobs:
-  release-content:
-    name: 'Create GitHub Release'
+  build:
+    name: 'Build application'
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install deps
+        run: yarn
+      - name: Build
+        run: yarn build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: template
+          path: dist/html.tpl
+
+  check-version:
+    name: 'Check version'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      next_version: ${{ steps.next-version.outputs.next_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -19,34 +42,28 @@ jobs:
       - name: Get new version
         id: next-version
         run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
-      - name: Display next-version output
-        run: echo "${{ steps.next-version.outputs.next_version }} ${{ steps.next-version.outputs.next_version != '' }}"
-      - name: Create tag v${{steps.next-version.outputs.next_version}}
-        if: ${{ steps.next-version.outputs.next_version != '' }}
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: v${{steps.next-version.outputs.next_version}}
+
+  release-content:
+    name: 'Create GitHub Release'
+    runs-on: ubuntu-latest
+    needs: [check-version, build]
+    if: ${{ needs.check-version.outputs.next_version != '' }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Find and Replace
-        if: ${{ steps.next-version.outputs.next_version != '' }}
-        run: sed -i 's/__VERSION__/${{steps.next-version.outputs.next_version}}/g' scan2html
-      - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v1
+        run: sed -i 's/__VERSION__/${{needs.check-version.outputs.next_version}}/g' scan2html
+      - uses: actions/download-artifact@v3
         with:
-          node-version: ${{ matrix.node }}
-      - name: Install deps
-        run: yarn
-      - name: Build
-        run: yarn build
-      - name: Move
-        if: ${{ steps.next-version.outputs.next_version != '' }}
-        run: mv dist/html.tpl .
+          name: template
+          path: .
       - name: Compress
-        if: ${{ steps.next-version.outputs.next_version != '' }}
         id: compress
         run: tar -cvf scan2html.tar.gz html.tpl LICENSE scan2html
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: ${{ steps.next-version.outputs.next_version != '' }}
         with:
           files: scan2html.tar.gz
-          tag_name: v${{steps.next-version.outputs.next_version}}
+          tag_name: v${{needs.check-version.outputs.next_version}}
