@@ -1,6 +1,9 @@
 name: 'Build'
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'plugin.yaml'
 
 jobs:
   release-content:
@@ -11,48 +14,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Run read-yaml action
-        id: yaml-data
-        uses: jbutcher5/read-yaml@main
         with:
-          file: './plugin.yaml'
-          key-path: '["version"]'
-
-      - name: Display read-yaml output
-        run: echo "${{ steps.yaml-data.outputs.data }}"
-      - uses: mukunku/tag-exists-action@v1.2.0
-        id: checkTag
-        with: 
-          tag: v${{steps.yaml-data.outputs.data}}
-
-      - run: echo ${{ steps.checkTag.outputs.exists }}
-      - name: Create tag v${{steps.yaml-data.outputs.data}}
-        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+          fetch-depth: 2
+      - name: Get new version
+        id: next-version
+        run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
+      - name: Display next-version output
+        run: echo "${{ steps.next-version.outputs.next_version }} ${{ steps.next-version.outputs.next_version != '' }}"
+      - name: Create tag v${{steps.next-version.outputs.next_version}}
+        if: ${{ steps.next-version.outputs.next_version != '' }}
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: v${{steps.yaml-data.outputs.data}}
-
+          tag: v${{steps.next-version.outputs.next_version}}
       - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@v3
-        if: ${{ steps.checkTag.outputs.exists == 'false' }}
-        with:
-          find: "__VERSION__"
-          replace: ${{steps.yaml-data.outputs.data}}
-          regex: false
-          exclude: "*.md"
+        if: ${{ steps.next-version.outputs.next_version != '' }}
+        run: sed -i 's/__VERSION__/${{steps.next-version.outputs.next_version}}/g' scan2html
       - name: Use Node ${{ matrix.node }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - name: Install deps and build (with cache)
-        uses: bahmutov/npm-install@v1
+      - name: Install deps
+        run: yarn
       - name: Build
         run: yarn build
       - name: Move
-        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        if: ${{ steps.next-version.outputs.next_version != '' }}
         run: mv dist/html.tpl .
       - name: Compress
-        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        if: ${{ steps.next-version.outputs.next_version != '' }}
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
@@ -64,7 +53,7 @@ jobs:
           outPath: scan2html.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        if: ${{ steps.next-version.outputs.next_version != '' }}
         with:
           files: scan2html.tar.gz
-          tag_name: v${{steps.yaml-data.outputs.data}}
+          tag_name: v${{steps.next-version.outputs.next_version}}
