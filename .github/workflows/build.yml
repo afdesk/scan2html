@@ -42,15 +42,8 @@ jobs:
         run: mv dist/html.tpl .
       - name: Compress
         if: ${{ steps.next-version.outputs.next_version != '' }}
-        uses: a7ul/tar-action@v1.1.0
         id: compress
-        with:
-          command: c
-          files: |
-            html.tpl
-            LICENSE
-            scan2html
-          outPath: scan2html.tar.gz
+        run: tar -cvf scan2html.tar.gz html.tpl LICENSE scan2html
       - name: Release
         uses: softprops/action-gh-release@v1
         if: ${{ steps.next-version.outputs.next_version != '' }}
