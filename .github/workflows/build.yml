@@ -1,16 +1,34 @@
-name: 'Build'
+name: "Build"
 
 on:
   push:
     paths:
-      - 'plugin.yaml'
+      - "plugin.yaml"
 
 jobs:
-  build:
-    name: 'Build application'
+  check-version:
+    name: "Check version"
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      next_version: ${{ steps.next-version.outputs.next_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: Get new version
+        id: next-version
+        run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
+
+  build:
+    name: "Build application"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [check-version]
+    if: ${{ needs.check-version.outputs.next_version != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -27,24 +45,8 @@ jobs:
           name: template
           path: dist/html.tpl
 
-  check-version:
-    name: 'Check version'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      next_version: ${{ steps.next-version.outputs.next_version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - name: Get new version
-        id: next-version
-        run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
-
   release-content:
-    name: 'Create GitHub Release'
+    name: "Create GitHub Release"
     runs-on: ubuntu-latest
     needs: [check-version, build]
     if: ${{ needs.check-version.outputs.next_version != '' }}
@@ -63,7 +65,7 @@ jobs:
         id: compress
         run: tar -cvf scan2html.tar.gz html.tpl LICENSE scan2html
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v0.1.15
         with:
           files: scan2html.tar.gz
           tag_name: v${{needs.check-version.outputs.next_version}}
