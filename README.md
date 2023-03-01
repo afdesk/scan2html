@@ -18,3 +18,8 @@ Examples:
   trivy scan2html fs . result.html
 ```
 
+## Uninstall
+```sh
+  trivy plugin uninstall scan2html
+```
+
