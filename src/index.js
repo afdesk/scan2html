@@ -1,8 +1,8 @@
 window.onload = function () {
   const titleTimeElem = document.querySelector('#title-time');
   const goFormatDate = titleTimeElem.innerHTML;
-  const goFormatDateWithoutMonotonClock = goFormatDate.split('m=+')[0];
-  const localeDate = new Date(goFormatDateWithoutMonotonClock).toLocaleString();
+  const goFormatDateParts = goFormatDate.split(' ');
+  const localeDate = new Date(Date.parse(goFormatDateParts[0] + ' ' + goFormatDateParts[1])).toLocaleString();
   titleTimeElem.innerHTML = localeDate;
   titleTimeElem.classList.toggle('initially-disabled');
   document.title += ' ' + titleTimeElem.innerHTML;
