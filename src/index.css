@@ -6,6 +6,10 @@ h1 {
   text-align: center;
 }
 
+.initially-disabled {
+  display: none;
+}
+
 .link {
   text-overflow: ellipsis;
   overflow: hidden;
@@ -116,6 +120,7 @@ ul {
   align-items: center;
 
 }
+
 .filterable:hover {
   background-color: #f1f1f1;
 }
