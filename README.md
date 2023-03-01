@@ -18,13 +18,3 @@ Examples:
   trivy scan2html fs . result.html
 ```
 
-## Build
-
-```
-  yarn
-  yarn build
-```
-
-## Release
-To release, change the version in plugin.yml and push the changes
-When released, all the words "\_\_VERSION__" in scan2html file will be replaced with the release version from plugin.yaml
