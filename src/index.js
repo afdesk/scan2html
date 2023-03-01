@@ -1,4 +1,11 @@
 window.onload = function () {
+  const titleTimeElem = document.querySelector('#title-time');
+  const goFormatDate = titleTimeElem.innerHTML;
+  const goFormatDateWithoutMonotonClock = goFormatDate.split('m=+')[0];
+  const localeDate = new Date(goFormatDateWithoutMonotonClock).toLocaleString();
+  titleTimeElem.innerHTML = localeDate;
+  titleTimeElem.classList.toggle('initially-disabled');
+  document.title += ' ' + titleTimeElem.innerHTML;
   document.querySelectorAll('td.links').forEach(function (linkCell) {
     var links = [].concat.apply([], linkCell.querySelectorAll('a'));
     [].sort.apply(links, function (a, b) {

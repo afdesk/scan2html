@@ -5,12 +5,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   {{- if . }}
   <link rel="stylesheet" href="./index.css">
-  <title>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now }} </title>
+  <title>Trivy Report - {{ escapeXML ( index . 0 ).Target }}</title>
   <script src="./index.js"></script>
 </head>
 
 <body>
-  <h1>{{- escapeXML ( index . 0 ).Target }} - Trivy Report - {{ now }}</h1>
+  <h1>Trivy Report - {{ escapeXML ( index . 0 ).Target }} - <span id='title-time' class="initially-disabled">{{ now }}</span></h1>
   <div class="filter_bar">
     <input type="text" placeholder="Search.." title="Search by package, vulnerability id, severity, installed version"
       class="filter_bar__filter_name search">
