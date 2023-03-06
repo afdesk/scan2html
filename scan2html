@@ -10,7 +10,7 @@ Usage: trivy scan2html [-h,--help] command target filename
 Options:
   -h, --help    Show usage.
 Examples:
-  # Scan `alpine:latest` image
+  # Scan \`alpine:latest\` image
   trivy scan2html image alpine:latest result.html
 
   # Scan local folder
