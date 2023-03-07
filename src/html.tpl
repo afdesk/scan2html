@@ -63,7 +63,7 @@
         <td>{{ escapeXML .FixedVersion }}</td>
         <td class="links" data-more-links="off">
           {{- range .Vulnerability.References }}
-          <a class="link" href='{{ escapeXML . | printf "%s" }}'>{{ escapeXML . }}</a>
+          <a class="link" href='{{ escapeXML . | printf "%s" }}' target="_blank" rel="noopener">{{ escapeXML . }}</a>
           {{- end }}
         </td>
       </tr>
@@ -92,7 +92,7 @@
       <td class="link" data-more-links="off" style="white-space:normal;">
         {{ escapeXML .Message }}
         <br>
-        <a href='{{ escapeXML .PrimaryURL | printf "%s" }}'>{{ escapeXML .PrimaryURL }}</a>
+        <a href='{{ escapeXML .PrimaryURL | printf "%s" }}' target="_blank" rel="noopener">{{ escapeXML .PrimaryURL }}</a>
         </br>
       </td>
     </tr>
