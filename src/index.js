@@ -96,26 +96,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const pkgVersionCells = document.querySelectorAll('.pkg-version'); // all tables
 
   const filterable = document.querySelectorAll('.filterable');
+  const cellClasses = ['.pkg-name', '.vuln', '.severity', '.pkg-version']
+
   function applyFilters(
     nextNameFilterValue,
   ) {
     filterable.forEach(f => {
-      const pkgNameCell = f.querySelector('.pkg-name');
-      const vulnCell = f.querySelector('.vuln');
-      const severityCell = f.querySelector('.severity');
-      const pkgVersionCell = f.querySelector('.pkg-version');
+      if (!nextNameFilterValue) {
+        return
+      }
+      
+      const cellValues = cellClasses
+        .map(cl => f.querySelector(cl))
+        .map(cell => cell.textContent || cell.innerText)
 
-      const pkgNameCellValue = pkgNameCell.textContent || pkgNameCell.innerText;
-      const vulnCellValue = vulnCell.textContent || vulnCell.innerText;
-      const severityCellValue = severityCell.textContent || severityCell.innerText;
-      const pkgVersionCellValue = pkgVersionCell.textContent || pkgVersionCell.innerText;
-      const condition =
-        (!nextNameFilterValue || pkgNameCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) ||
-        (!nextNameFilterValue || vulnCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) ||
-        (!nextNameFilterValue || severityCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1) ||
-        (!nextNameFilterValue || pkgVersionCellValue.toUpperCase().indexOf(nextNameFilterValue.toUpperCase()) > -1);
-      if (condition) f.style.display = '';
-      else f.style.display = 'none';
+      const condition = cellValues.some(
+        cellValue => cellValue.toUpperCase().includes(nextNameFilterValue.toUpperCase())
+      )
+            
+      f.style.display = condition ? '' : 'none'
     })
   }
   nameFilter.addEventListener('keyup', (e) => {
