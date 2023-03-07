@@ -2,10 +2,12 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-h1 {
+h1, h2 {
   text-align: center;
 }
-
+.top-vuln-title, .top-misc-title {
+  border-bottom: 1px solid #0000001f;
+}
 .initially-disabled {
   display: none;
 }

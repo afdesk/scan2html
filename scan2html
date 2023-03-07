@@ -2,7 +2,7 @@
 
 # help
 function help() {
-  cat << EOS >&2
+  cat <<EOS >&2
 scan2html v__VERSION__
 
 Usage: trivy scan2html [-h,--help] command target filename
@@ -10,7 +10,7 @@ Usage: trivy scan2html [-h,--help] command target filename
 Options:
   -h, --help    Show usage.
 Examples:
-  # Scan `alpine:latest` image
+  # Scan $(alpine:latest) image
   trivy scan2html image alpine:latest result.html
 
   # Scan local folder
@@ -21,7 +21,15 @@ EOS
 
 function scan {
   BASEDIR=$(dirname "$0")
-  trivy $1 --format template --template @$BASEDIR/html.tpl --output $3 $2
+  args=("${@:2:$#-2}")
+  last_arg="${!#}"
+  set -- "$1" "${args[@]}" "$last_arg"
+  trivy $1 --format json -o $BASEDIR/data.js ${args[@]}
+  cat $BASEDIR/first.html >$last_arg
+  echo "const trivyData = " >>$last_arg
+  cat $BASEDIR/data.js >>$last_arg
+  echo "const createdAt = $(date +%s%3N)" >>$last_arg
+  cat $BASEDIR/second.html >>$last_arg
 }
 
 if [[ ($# -eq 0) || ($1 == "--help") || ($1 == "-h") ]]; then

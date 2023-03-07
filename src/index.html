@@ -1,0 +1,161 @@
+<!-- split first.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="index.css">
+    <title>Trivy Report</title>
+</head>
+<body>
+<main id="root">
+    <h1 id="report-title">Trivy Report - <span class="report-title__target"></span> - <span
+            id='title-time'></span>
+    </h1>
+    <div class="filter_bar">
+        <input type="text" placeholder="Search.."
+               title="Search by package, vulnerability id, severity, installed version"
+               class="filter_bar__filter_name search">
+    </div>
+</main>
+<template id="top-vuln">
+    <h2 class="top-vuln-title"></h2>
+    <div class="tables-container"></div>
+</template>
+
+<template id="top-misc">
+    <h2 class="top-misc-title"></h2>
+    <div class="tables-container"></div>
+</template>
+<template id="table">
+    <div class="header">
+        <h3 class="header__title"></h3>
+    </div>
+
+    <table>
+        <thead>
+        <tr class="sub-header">
+            <th data-type="string" data-sortable="true"><span> Package </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> Vulnerability ID </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="severity" data-sortable="true"><span> Severity </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> Installed Version </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="false"><span> Fixed Version </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="false"><span> Links </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+        </tr>
+        </thead>
+        <tbody data-main="true">
+        </tbody>
+    </table>
+</template>
+<template id="misc-table">
+    <div class="header">
+        <h3 class="header__title"></h3>
+    </div>
+
+    <table>
+        <thead>
+        <tr class="sub-header">
+            <th data-type="string" data-sortable="true"><span> Type </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> Misconf ID </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> Check </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="severity" data-sortable="true"><span> Severity </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="false"><span> Message </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+        </tr>
+        </thead>
+        <tbody data-main="true">
+        </tbody>
+    </table>
+</template>
+<template id="empty-vuln-header">
+    <tr>
+        <th colspan="6">No Vulnerabilities found</th>
+    </tr>
+</template>
+<template id="empty-misc-header">
+    <tr>
+        <th colspan="5">No Misconfigurations found</th>
+    </tr>
+</template>
+<template id="misc-table-row">
+    <tr class="filterable">
+        <td class="misc-type"></td>
+        <td class="misc-id"></td>
+        <td class="misc-check"></td>
+        <td class="misc-sev"></td>
+        <td class="misc-msg"></td>
+    </tr>
+</template>
+<template id="table-row">
+    <tr class="filterable">
+        <td class="pkg-name"></td>
+        <td class="vuln"></td>
+        <td class="severity"></td>
+        <td class="pkg-version"></td>
+        <td class="fix-version"></td>
+        <td class="links" data-more-links="off"></td>
+    </tr>
+</template>
+<template id="vuln-link">
+    <a class="link" href=''></a>
+</template>
+
+<script><!-- split second.html --></script>
+<script src="js/render.js"></script>
+<script src="js/interactivity.js"></script>
+</body>
+</html>
