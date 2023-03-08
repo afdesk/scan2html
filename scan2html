@@ -21,7 +21,7 @@ EOS
 
 function scan {
   BASEDIR=$(dirname "$0")
-  trivy $1 --format template --template @$BASEDIR/html.tpl --output $3 $2
+  trivy $1 --format template --template @$BASEDIR/html.tpl --output ${3:-result.html} $2
 }
 
 if [[ ($# -eq 0) || ($1 == "--help") || ($1 == "-h") ]]; then
