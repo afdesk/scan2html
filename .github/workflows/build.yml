@@ -43,7 +43,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: template
-          path: dist/html.tpl
+          path: dist/*.html
 
   release-content:
     name: "Create GitHub Release"
@@ -63,7 +63,7 @@ jobs:
           path: .
       - name: Compress
         id: compress
-        run: tar -czvf scan2html.tar.gz html.tpl LICENSE scan2html
+        run: tar -czvf scan2html.tar.gz first.html second.html LICENSE scan2html
       - name: Release
         uses: softprops/action-gh-release@v0.1.15
         with:
