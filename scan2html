@@ -2,7 +2,7 @@
 
 # help
 function help() {
-  cat << EOS >&2
+  cat <<EOS >&2
 scan2html v__VERSION__
 
 Usage: trivy scan2html [-h,--help] command target filename
@@ -28,7 +28,7 @@ function scan {
   cat $BASEDIR/first.html >$last_arg
   echo "const trivyData = " >>$last_arg
   cat $BASEDIR/data.js >>$last_arg
-  echo "const createdAt = $(date +%s%3N)" >>$last_arg
+  echo "const createdAt = $(date +%s%3)" >>$last_arg
   cat $BASEDIR/second.html >>$last_arg
 }
 
