@@ -3,6 +3,7 @@ const cleanCSS = require("gulp-clean-css");
 const inline = require("gulp-inline");
 const uglify = require("gulp-uglify");
 const htmlSplit = require('gulp-htmlsplit');
+const argv = require('yargs').argv;
 
 function makeInline() {
 	return gulp
@@ -19,9 +20,15 @@ function makeInline() {
 }
 
 gulp.task('default', function () {
+	let dist;
+	if (argv.dist) {
+		dist = argv.dist;
+	} else {
+		dist = './dist'
+	}
 	return makeInline()
 		.pipe(htmlSplit())
-		.pipe(gulp.dest("./dist"));
+		.pipe(gulp.dest(dist));
 })
 
 
