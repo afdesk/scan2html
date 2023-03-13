@@ -26,12 +26,14 @@ function scan {
   args=("${@:2:$#-2}")
   last_arg="${!#}"
   set -- "$1" "${args[@]}" "$last_arg"
-  trivy $1 --format json -o $BASEDIR/$tmp_json_file ${args[@]}
-  cat $BASEDIR/first.html >$last_arg
-  echo "const trivyData = " >>$last_arg
-  cat $BASEDIR/$tmp_json_file >>$last_arg
-  echo "const createdAt = $(date +%s%3)" >>$last_arg
-  cat $BASEDIR/second.html >>$last_arg
+  trivy "$1" --format json -o "$BASEDIR"/$tmp_json_file "${args[@]}"
+  cat "$BASEDIR"/first.html >$last_arg
+  {
+    echo "const trivyData = "
+    cat "$BASEDIR"/$tmp_json_file
+    echo "const createdAt = $(date +%s%3)"
+    cat "$BASEDIR"/second.html
+  } >>$last_arg
 
   trap 'rm -f $tmp_json_file' EXIT
 }
