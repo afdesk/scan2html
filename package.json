@@ -2,7 +2,9 @@
   "scripts": {
     "build": "gulp",
     "build-single": "gulp single",
-    "test": "mocha --timeout 10000"
+    "test": "mocha --timeout 10000",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open"
   },
   "engines": {
     "node": ">=12.0.0"
