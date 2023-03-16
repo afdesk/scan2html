@@ -7,9 +7,8 @@ h1, h2 {
 }
 
 .top-vuln-title, .top-misc-title {
-	border-bottom: 1px solid #0000001f;
+  border-bottom: 1px solid #0000001f;
 }
-
 .initially-disabled {
 	display: none;
 }
