@@ -153,6 +153,43 @@
 <template id="vuln-link">
     <a class="link" href='' target="_blank" rel="noopener"></a>
 </template>
+<template id="secret-results">
+    <div class="secret-results">
+        <h3 class="secret-results__title">
+            <span class="secret-results__title-target"></span>
+            <span class="secret-results__title-class"></span>
+        </h3>
+        <div class="secret-results__content"></div>
+    </div>
+</template>
+<template id="secret">
+    <div class="secret">
+        <div class="secret__head">
+            <span class="secret__severity"></span>
+            <span class="secret__type"></span>
+        </div>
+        <div class="secret__title"></div>
+        <div class="secret__src">
+            <span class="secret__src-file"></span>
+            <span class="secret__src-delimiter">:</span>
+            <span class="secret__src-lines"></span>
+        </div>
+        <div class="secret__code">
+
+        </div>
+    </div>
+</template>
+<template id="secret__code-line">
+    <div class="secret__line">
+        <div class="secret__line-number">
+
+        </div>
+        <div class="secret__line-code">
+        <pre>
+        </pre>
+        </div>
+    </div>
+</template>
 
 <script><!-- split second.html --></script>
 <script src="js/render.js"></script>
