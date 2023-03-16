@@ -2,20 +2,30 @@ const gulp = require("gulp");
 const cleanCSS = require("gulp-clean-css");
 const inline = require("gulp-inline");
 const uglify = require("gulp-uglify");
+const htmlSplit = require('gulp-htmlsplit');
 
-function defaultTask(cb) {
-  gulp
-    .src("./src/html.tpl")
-    .pipe(
-      inline({
-        base: "./src",
-        js: uglify,
-        css: function () {
-          return cleanCSS();
-        },
-      })
-    )
-    .pipe(gulp.dest("./dist"));
-  cb();
+function makeInline() {
+	return gulp
+		.src("./src/index.html")
+		.pipe(
+			inline({
+				base: "./src",
+				js: uglify,
+				css: function () {
+					return cleanCSS();
+				},
+			})
+		);
 }
-exports.default = defaultTask;
+
+gulp.task('default', function () {
+	return makeInline()
+		.pipe(htmlSplit())
+		.pipe(gulp.dest("./dist"));
+})
+
+
+gulp.task('single', function () {
+	return makeInline()
+		.pipe(gulp.dest("./dist"));
+})
