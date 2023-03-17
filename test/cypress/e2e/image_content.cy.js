@@ -1,4 +1,4 @@
-describe('check content', () => {
+describe('check image content', () => {
 	let reportFile;
 	before(async () => {
 		reportFile = await cy.task('prepareEnv', {
@@ -15,7 +15,7 @@ describe('check content', () => {
 	})
 	it('test content', () => {
 		cy.visit(reportFile)
-		cy.get('input').should('be.visible');
+		cy.get('table').should('be.visible');
 	})
 	it('test click', () => {
 		cy.visit(reportFile)

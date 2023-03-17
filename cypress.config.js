@@ -22,5 +22,6 @@ module.exports = defineConfig({
 		screenshotsFolder: 'test/cypress/screenshots',
 		specPattern: 'test/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
 		supportFile: 'test/cypress/support/e2e.{js,jsx,ts,tsx}',
+		videosFolder: 'test/cypress/videos',
 	},
 });

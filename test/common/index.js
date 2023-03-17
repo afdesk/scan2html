@@ -18,12 +18,6 @@ const handleScan = (filePath, done) => (error) => {
 		done(new Error('file was not created'))
 	}
 }
-/*
- reportParams: {
- 	args: string, // trivy sca2nhtml image alpine report.html -> image alpine
- 	outputFileName: string, // trivy sca2nhtml image alpine report.html -> report.html
- }
- */
 const executeCommand = (command) => new Promise((res, rej) => {
 	exec(command, (err) => {
 		if (err) {
@@ -41,6 +35,12 @@ const copy = (from, to) => new Promise((res, rej) => {
 		return res();
 	});
 })
+/*
+ reportParams: {
+ 	args: string, // trivy sca2nhtml image alpine report.html -> image alpine
+ 	outputFileName: string, // trivy sca2nhtml image alpine report.html -> report.html
+ }
+ */
 const prepareTestEnvironment = (reportParams) => async () => {
 	//create temp folder if not exist
 	if (!fs.existsSync(TEMP_FOLDER_PATH)) {

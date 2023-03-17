@@ -4,3 +4,6 @@ node_modules/
 dist/
 **/.DS_Store
 test/temp/
+test/cypress/screenshots/*
+test/cypress/videos/*
+!test/resources/node_modules/
