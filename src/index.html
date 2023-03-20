@@ -29,7 +29,7 @@
 </template>
 <template id="table">
     <div class="header">
-        <h3 class="header__title"></h3>
+        <h3 class="header__title ta-center"></h3>
     </div>
 
     <table>
@@ -79,7 +79,7 @@
 </template>
 <template id="misc-table">
     <div class="header">
-        <h3 class="header__title"></h3>
+        <h3 class="header__title ta-center"></h3>
     </div>
 
     <table>
@@ -142,10 +142,10 @@
 </template>
 <template id="table-row">
     <tr class="filterable">
-        <td class="pkg-name"></td>
+        <td class="pkg-name break-word"></td>
         <td class="vuln"></td>
-        <td class="severity"></td>
-        <td class="pkg-version"></td>
+        <td class="severity ta-center"></td>
+        <td class="pkg-version ta-center"></td>
         <td class="fix-version"></td>
         <td class="links" data-more-links="off"></td>
     </tr>
@@ -190,9 +190,41 @@
         </div>
     </div>
 </template>
+<template id="pkgs-table">
+    <div class="header">
+        <h3 class="header__title ta-center">Packages</h3>
+    </div>
 
+    <table>
+        <thead>
+        <tr class="sub-header"></tr>
+        </thead>
+        <tbody data-main="true"></tbody>
+    </table>
+</template>
+<template id="table-head-cell">
+    <th data-type data-sortable>
+        <span class="table-head-cell__content"></span>
+        <svg
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+            <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+        </svg>
+    </th>
+</template>
+<template id="table-body-row">
+    <tr class="filterable">
+    </tr>
+</template>
+<template id="table-body-cell">
+    <td>
+    </td>
+</template>
+<template id="result-container">
+    <div class="tables"></div>
+</template>
 <script><!-- split second.html --></script>
 <script src="js/render.js"></script>
 <script src="js/interactivity.js"></script>
 </body>
 </html>
+<!-- split stop -->

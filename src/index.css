@@ -7,8 +7,9 @@ h1, h2 {
 }
 
 .top-vuln-title, .top-misc-title {
-  border-bottom: 1px solid #0000001f;
+	border-bottom: 1px solid #0000001f;
 }
+
 .initially-disabled {
 	display: none;
 }
@@ -46,7 +47,6 @@ table {
 }
 
 .severity {
-	text-align: center;
 	font-weight: bold;
 }
 
@@ -91,18 +91,8 @@ th span {
 	visibility: visible;
 }
 
-.pkg-version {
-	text-align: center;
-}
-
 ul {
 	list-style-type: none;
-}
-
-.title {
-	text-align: center;
-	font-size: 24px;
-	border-bottom: 1px solid #0000001f;
 }
 
 .search {
@@ -124,7 +114,6 @@ ul {
 .filter_bar {
 	display: flex;
 	align-items: center;
-
 }
 
 .filterable:hover {
@@ -134,12 +123,18 @@ ul {
 .pkg-name {
 	width: 100%;
 	height: 1.2em;
+}
+
+.ta-center {
+	text-align: center;
+}
+
+.break-word {
 	word-wrap: break-word;
 }
 
 .header__title {
 	font-size: 24px;
-	text-align: center;
 }
 
 .secret__line {
