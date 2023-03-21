@@ -278,7 +278,7 @@ function renderCreatedAt() {
     return console.error("Creation timestamp not loaded");
   }
   const titleTimeElem = document.querySelector("#title-time");
-  titleTimeElem.innerHTML = new Date(createdAt).toLocaleString();
+  titleTimeElem.innerHTML = new Date(createdAt * 1000).toLocaleString();
   document.title += " " + titleTimeElem.innerHTML;
 }
 
