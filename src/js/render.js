@@ -12,13 +12,70 @@ const topMiscTemplate = document.querySelector("#top-misc");
 const secretResultsTemplate = document.querySelector("#secret-results");
 const secretTemplate = document.querySelector("#secret");
 const secretCodeLineTemplate = document.querySelector("#secret__code-line");
+const resultContainerTemplate = document.querySelector("#result-container");
+const pkgTableTemplateTemplate = document.querySelector("#pkgs-table");
+const tableHeadCellTemplate = document.querySelector("#table-head-cell");
+const tableBodyRowTemplate = document.querySelector("#table-body-row");
+const tableBodyCellTemplate = document.querySelector("#table-body-cell");
 
 /* available templates */
+const pkgKeys = {
+  ID: {
+    dataType: "string",
+    dataSortable: true,
+    classes: [],
+  },
+  Name: {
+    dataType: "string",
+    dataSortable: true,
+    classes: ["break-word", "pkg-key-name"],
+  },
+  Version: {
+    dataType: "string",
+    dataSortable: true,
+    classes: ["ta-center", "break-word", "pkg-key-version"],
+  },
+  SrcName: {
+    dataType: "string",
+    dataSortable: true,
+    classes: ["break-word", "pkg-key-src-name"],
+  },
+  SrcVersion: {
+    dataType: "string",
+    dataSortable: true,
+    classes: ["break-word", "pkg-key-src-version"],
+  },
+};
 
-function fillResultTable(result) {
-  const resultTable = tableTemplate.content.cloneNode(true);
-  const resultTableHeader = resultTable.querySelector(".header__title");
-  const resultTableBody = resultTable.querySelector("tbody");
+/**
+ *
+ * @param firstPkgKeys
+ * @param pkgTableHead
+ * @returns {*[]} array of available keys
+ */
+function fillPkgTableHeadAndGetAvailableKeys(firstPkgKeys, pkgTableHead) {
+  const availableKeys = [];
+  const headCells = [];
+  firstPkgKeys.forEach((key) => {
+    if (!pkgKeys[key]) return;
+    availableKeys.push(key);
+    const tableHeadCell = tableHeadCellTemplate.content.cloneNode(true);
+    const th = tableHeadCell.querySelector("th");
+    const content = tableHeadCell.querySelector(".table-head-cell__content");
+    th.dataset.type = pkgKeys[key].dataType;
+    th.dataset.sortable = pkgKeys[key].dataSortable;
+    content.textContent = key;
+    headCells.push(th);
+  });
+  pkgTableHead.append(...headCells);
+  return availableKeys;
+}
+
+function fillResultsTable(result) {
+  const vulnerabilitiesTable = tableTemplate.content.cloneNode(true);
+  const vulnerabilitiesTableHeader =
+    vulnerabilitiesTable.querySelector(".header__title");
+  const vulnerabilitiesTableBody = vulnerabilitiesTable.querySelector("tbody");
   result.Vulnerabilities.forEach((vuln) => {
     const resultTableRow = tableRowTemplate.content.cloneNode(true);
     const pkgName = resultTableRow.querySelector(".pkg-name");
@@ -41,11 +98,57 @@ function fillResultTable(result) {
         links.append(linkElement);
       });
     }
-    resultTableBody.append(resultTableRow);
+    vulnerabilitiesTableBody.append(resultTableRow);
   });
+  vulnerabilitiesTableHeader.textContent = result.Type;
+  return vulnerabilitiesTable;
+}
+
+function fillPkgTable(result) {
+  const pkgTable = pkgTableTemplateTemplate.content.cloneNode(true);
+  const pkgTableBody = pkgTable.querySelector("tbody");
+  const pkgTableHeadRow = pkgTable.querySelector("thead tr");
+  const firstPkgKeys = Object.keys(result.Packages[0]);
+  const availablePgkKeys = fillPkgTableHeadAndGetAvailableKeys(
+    firstPkgKeys,
+    pkgTableHeadRow
+  );
+  const pkgTableRows = result.Packages.map((pkg) => {
+    const pkgRow = tableBodyRowTemplate.content.cloneNode(true);
+    const rowContainer = pkgRow.querySelector("tr");
+    const pkgRows = availablePgkKeys.map((key) => {
+      const pkgCell = tableBodyCellTemplate.content.cloneNode(true);
+      const cellContainer = pkgCell.querySelector("td");
+      if (pkg[key]) {
+        cellContainer.textContent = pkg[key];
+        pkgKeys[key].classes &&
+          cellContainer.classList.add(...pkgKeys[key].classes);
+      }
+      return pkgCell;
+    });
+    rowContainer.append(...pkgRows);
+    return pkgRow;
+  });
+  return { pkgTable, pkgTableBody, pkgTableRows };
+}
+
+function fillResults(result) {
+  const resultContainer = resultContainerTemplate.content.cloneNode(true);
+  const tablesContainer = resultContainer.querySelector(".tables");
+
+  if (result.Vulnerabilities) {
+    const vulnerabilitiesTable = fillResultsTable(result);
+    tablesContainer.append(vulnerabilitiesTable);
+  }
+
+  if (result.Packages) {
+    const { pkgTable, pkgTableBody, pkgTableRows } = fillPkgTable(result);
+    pkgTableBody.append(...pkgTableRows);
+    tablesContainer.append(pkgTable);
+  }
+
   /*filling table*/
-  resultTableHeader.textContent = result.Type;
-  return resultTable;
+  return resultContainer;
 }
 
 function fillSecrets(result) {
@@ -123,7 +226,7 @@ function getResultTablesByResults(resultsData) {
   for (const result of resultsData) {
     if (result.Vulnerabilities && result.Vulnerabilities.length) {
       // Vulnerabilities field is not empty
-      const resultTable = fillResultTable(result);
+      const resultTable = fillResults(result);
       resultTables.push(resultTable);
     } else if (result.Secrets && result.Secrets.length) {
       // Secrets field is not empty
