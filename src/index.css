@@ -155,7 +155,7 @@ ul {
 }
 
 .secret__line-cause {
-	color: red;
+	color: #e40000;
 }
 
 .secret__line-number {
