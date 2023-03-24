@@ -1,16 +1,24 @@
 function fillResults(result) {
   const resultContainer = resultContainerTemplate.content.cloneNode(true);
   const tablesContainer = resultContainer.querySelector(".tables");
-
+  const argsArray = args.split(" ");
+  const allPkgsFlag = argsArray.includes("--list-all-pkgs");
+  const depTreeFlag = argsArray.includes("--dependency-tree");
   if (result.Vulnerabilities) {
     const vulnerabilitiesTable = fillVulnerabilitiesTable(result);
     tablesContainer.append(vulnerabilitiesTable);
   }
 
   if (result.Packages) {
-    const { pkgTable, pkgTableBody, pkgTableRows } = fillPkgTable(result);
-    pkgTableBody.append(...pkgTableRows);
-    tablesContainer.append(pkgTable);
+    if (allPkgsFlag) {
+      const { pkgTable, pkgTableBody, pkgTableRows } = fillPkgTable(result);
+      pkgTableBody.append(...pkgTableRows);
+      tablesContainer.append(pkgTable);
+    }
+    if (depTreeFlag) {
+      const dependencyTreeRoot = fillDependencyTree(result);
+      tablesContainer.append(dependencyTreeRoot);
+    }
   }
 
   /*filling table*/

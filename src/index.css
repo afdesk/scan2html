@@ -216,3 +216,94 @@ ul {
 .secret + .secret {
 	margin-top: 10px;
 }
+
+ul {
+	list-style: none;
+}
+
+.hidden {
+	display: none;
+}
+
+.tree {
+	--spacing: 1.5rem;
+	--radius: 10px;
+	font-size: 20px;
+	margin-top: 10px;
+}
+
+.tree li {
+	display: block;
+	position: relative;
+	padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+}
+
+.tree ul {
+	margin-left: calc(var(--radius) - var(--spacing));
+	padding-left: 0;
+}
+
+.tree ul li {
+	border-left: 2px solid #ddd;
+}
+
+.tree ul li:last-child {
+	border-color: transparent;
+}
+
+.tree ul li::before {
+	content: '';
+	display: block;
+	position: absolute;
+	top: calc(var(--spacing) / -2);
+	left: -2px;
+	width: calc(var(--spacing) + 8px);
+	height: calc(var(--spacing) + -1px);
+	border: solid #ddd;
+	border-width: 0 0 2px 2px;
+}
+
+.tree .dependency-tree-node__title {
+	display: block;
+}
+
+.tree .dependency-tree-node__title::marker,
+.tree .dependency-tree-node__title::-webkit-details-marker {
+	display: none;
+}
+
+.tree .dependency-tree-node__title:focus {
+	outline: none;
+}
+
+.tree .dependency-tree-node__title:focus-visible {
+	outline: 1px dotted #000;
+}
+
+.dependency-tree-node__dots {
+	font-size: 22px;
+	border: 1px solid #e1e1e1;
+	background: #e0e0e0;
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	text-align: center;
+	border-radius: 5px;
+	line-height: 11px;
+	cursor: pointer;
+
+	position: relative;
+	z-index: 2;
+}
+
+.tree > li > ul.dependency-tree-node__children.original > li > span {
+	color: #e40000;
+}
+
+.dependency-tree__title {
+	margin-bottom: 0;
+}
+
+.dependency-tree__description {
+	font-size: 24px;
+}

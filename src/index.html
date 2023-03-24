@@ -222,12 +222,29 @@
 <template id="result-container">
     <div class="tables"></div>
 </template>
+
+<template id="dependency-tree">
+    <div class="dependency-tree__container">
+        <h3 class="dependency-tree__description ta-center">Dependency Origin Tree (Reversed)</h3>
+        <h3 class="dependency-tree__title"></h3>
+        <ul class="tree"></ul>
+    </div>
+</template>
+
+<template id="dependency-tree-node">
+    <li class="dependency-tree-node__container">
+        <span class="dependency-tree-node__title"></span>
+        <ul class="dependency-tree-node__children original"></ul>
+        <ul class="dependency-tree-node__children collapsed"></ul>
+    </li>
+</template>
 <script><!-- split second.html --></script>
 <script src="js/render/define-templates.js"></script>
 <script src="js/render/secrets.js"></script>
 <script src="js/render/vulnerabilities.js"></script>
 <script src="js/render/misconfiguration.js"></script>
 <script src="js/render/package.js"></script>
+<script src="js/render/dependency-tree.js"></script>
 <script src="js/render/base.js"></script>
 <script src="js/interactivity.js"></script>
 </body>

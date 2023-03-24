@@ -16,3 +16,5 @@ const pkgTableTemplateTemplate = document.querySelector("#pkgs-table");
 const tableHeadCellTemplate = document.querySelector("#table-head-cell");
 const tableBodyRowTemplate = document.querySelector("#table-body-row");
 const tableBodyCellTemplate = document.querySelector("#table-body-cell");
+const dependencyTreeRootTemplate = document.querySelector("#dependency-tree");
+const dependencyTreeNodeTemplate = document.querySelector("#dependency-tree-node");
