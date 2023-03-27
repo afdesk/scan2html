@@ -6,4 +6,4 @@ dist/
 test/temp/
 test/cypress/screenshots/*
 test/cypress/videos/*
-!test/resources/node_modules/
+!test/resources/**/node_modules/

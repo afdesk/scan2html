@@ -7,7 +7,7 @@ const {
 	cleanup,
 	TEMP_SCRIPT_PATH,
 	TEMP_FOLDER_PATH
-} = require("./common");
+} = require("../common");
 
 describe('run scan2html with different options', function () {
 	before(prepareTestEnvironment());

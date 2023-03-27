@@ -28,9 +28,6 @@ gulp.task('default', function () {
 		.pipe(htmlSplit())
 		.pipe(gulp.dest(dist));
 })
-gulp.task("default", function () {
-	return makeInline().pipe(htmlSplit()).pipe(gulp.dest("./dist"));
-});
 
 gulp.task("dev", function () {
 	return gulp

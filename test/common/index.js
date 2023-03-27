@@ -66,5 +66,6 @@ module.exports = {
 	TEMP_SCRIPT_PATH,
 	prepareTestEnvironment,
 	cleanup,
-	handleScan
+	handleScan,
+	executeCommand
 }
