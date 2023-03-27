@@ -1,6 +1,7 @@
 {
   "scripts": {
     "build": "gulp",
+    "build-dev": "gulp dev",
     "build-single": "gulp single",
     "test": "mocha --timeout 10000",
     "test:e2e": "cypress run",
