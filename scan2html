@@ -32,6 +32,7 @@ function scan {
     echo "const trivyData = "
     cat "$BASEDIR"/$tmp_json_file
     echo "const createdAt = $(date +%s)"
+    echo "const args = \"$*\""
     cat "$BASEDIR"/second.html
   } >>$last_arg
 

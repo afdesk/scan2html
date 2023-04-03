@@ -3,3 +3,7 @@ node_modules/
 .vscode/
 dist/
 **/.DS_Store
+test/temp/
+test/cypress/screenshots/*
+test/cypress/videos/*
+!test/resources/**/node_modules/

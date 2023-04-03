@@ -124,8 +124,33 @@ function attachSortInteractivity() {
   });
 }
 
+function attachDependencyTreeInteractivity() {
+  const collapsable = document.querySelectorAll(".dependency-tree-node__dots");
+
+  collapsable.forEach((col) => {
+    col.addEventListener("click", () => {
+      const topParent = col.closest(
+        ".tree > li > ul.dependency-tree-node__children.original > .dependency-tree-node__container"
+      );
+      let original, collapsed;
+      for (let i = 0; i < topParent.children.length; i++) {
+        if (topParent.children[i].classList.contains("original")) {
+          original = topParent.children[i];
+          continue;
+        }
+        if (topParent.children[i].classList.contains("collapsed")) {
+          collapsed = topParent.children[i];
+        }
+      }
+      original.classList.remove("hidden");
+      collapsed.classList.add("hidden");
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   attachLinksInteractivity();
   attachSortInteractivity();
   attachFilterInteractivity();
+  attachDependencyTreeInteractivity();
 });

@@ -1,0 +1,41 @@
+{
+  "devDependencies": {
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-awspublish": "^4.1.2",
+    "gulp-debug": "^4.0.0",
+    "gulp-env": "^0.4.0",
+    "gulp-git": "^2.10.1",
+    "gulp-notify": "^3.2.0",
+    "gulp-phpunit": "^0.26.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.0.0",
+    "lodash": "^1.0.0",
+    "mkdirp": "^1.0.4",
+    "nconf": "^0.11.4",
+    "ngrok": "^4.3.3",
+    "q": "^1.5.1",
+    "rename": "^1.0.4",
+    "request": "^2.88.2",
+    "through2": "^4.0.2",
+    "trim-newlines": ">=3.0.1"
+  },
+  "scripts": {
+    "gulp": "./node_modules/gulp/bin/gulp.js"
+  },
+  "name": "exaple",
+  "version": "1.0.0",
+  "main": "gruntfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "author": "author",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^3.0.0",
+    "fastify": "^1.0.0",
+    "react": "^15.0.0",
+    "underscore": "^1.2.2",
+    "webpack": "^3.0.0"
+  }
+}
