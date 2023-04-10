@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"golang.org/x/exp/slices"
 	"log"
 	"os"
 	"os/exec"
@@ -12,9 +13,11 @@ import (
 
 var (
 	tempJsonFileName = "scan2html-report-temp.json"
+	version          = "dev"
 )
 
 func main() {
+	helpMessage()
 	trivyCommand := os.Args[1 : len(os.Args)-1]
 	outputFileName := os.Args[len(os.Args)-1]
 
@@ -68,4 +71,25 @@ func getPluginFileName(fileName string) string {
 		log.Fatalf("Failed to get plugin file %v", err)
 	}
 	return filepath.Join(filepath.Dir(ex), fileName)
+}
+
+func helpMessage() {
+	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
+		_, err := fmt.Printf(`
+scan2html v%s
+Usage: trivy scan2html [-h,--help] command target filename
+ A Trivy plugin that scans and output the results to a html file.
+Options:
+  -h, --help    Show usage.
+Examples:
+  # Scan 'alpine:latest' image
+  trivy scan2html image alpine:latest result.html
+  # Scan local folder
+  trivy scan2html fs . result.html
+`, version)
+		if err != nil {
+			log.Fatalf("Failed to display help message %v", err)
+		}
+		os.Exit(0)
+	}
 }
