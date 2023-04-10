@@ -1,0 +1,28 @@
+project_name: scan2html
+builds:
+  -
+    main: main.go
+    binary: scan2html
+    ldflags:
+      - -s -w
+      - "-extldflags '-static'"
+      - -X main.version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+archives:
+  -
+    format: tar.gz
+    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
+    replacements:
+      linux: Linux
+    files:
+      - README.md
+      - LICENSE
+      - plugin.yaml
+      - first.html
+      - second.html
