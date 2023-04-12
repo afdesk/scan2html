@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"golang.org/x/exp/slices"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"golang.org/x/exp/slices"
 )
 
 var (
@@ -52,7 +53,7 @@ func main() {
 	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
 		reportJson, createdAt, argsStr, secondHTML))
 
-	err = os.WriteFile(outputFileName, append(firstHTML, output...), 0666)
+	err = os.WriteFile(outputFileName, append(firstHTML, output...), 0600)
 	if err != nil {
 		log.Fatalf("failed to write output file: %v", err)
 	}
