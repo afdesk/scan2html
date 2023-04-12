@@ -18,17 +18,16 @@ var (
 
 func main() {
 	helpMessage()
-	trivyCommand := os.Args[1 : len(os.Args)-1]
 	outputFileName := os.Args[len(os.Args)-1]
-
-	tempFileName := filepath.Join(os.TempDir(), tempJsonFileName)
-	defer removeFile(tempFileName)
-	cmdArgs := append(trivyCommand, "--format", "json", "--output", tempFileName)
-	cmd := exec.Command("trivy", cmdArgs...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("failed to build report: %v", err)
+	jsonResultFile := loadResult()
+	if jsonResultFile == nil {
+		tempFileName := filepath.Join(os.TempDir(), tempJsonFileName)
+		jsonResultFile = &tempFileName
+		defer removeFile(*jsonResultFile)
+		err := makeTrivyJsonReport(*jsonResultFile)
+		if err != nil {
+			log.Fatalf("failed to build report: %v", err)
+		}
 	}
 
 	firstHTMLName := getPluginFileName("first.html")
@@ -37,7 +36,7 @@ func main() {
 		log.Fatalf("failed to read html file: %v", err)
 	}
 
-	reportJson, err := os.ReadFile(tempFileName)
+	reportJson, err := os.ReadFile(*jsonResultFile)
 	if err != nil {
 		log.Fatalf("failed to read json file: %v", err)
 	}
@@ -92,4 +91,25 @@ Examples:
 		}
 		os.Exit(0)
 	}
+}
+
+func loadResult() *string {
+	flagIndex := slices.Index(os.Args, "--load-result")
+	if flagIndex != -1 && (len(os.Args)-1) > flagIndex { // the flag exists and it is not the last argument
+		fileName := os.Args[flagIndex+1]
+		return &fileName
+	}
+	return nil
+}
+
+func makeTrivyJsonReport(jsonResultFile string) error {
+	trivyCommand := os.Args[1 : len(os.Args)-1]
+	cmdArgs := append(trivyCommand, "--format", "json", "--output", jsonResultFile)
+	cmd := exec.Command("trivy", cmdArgs...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
 }
