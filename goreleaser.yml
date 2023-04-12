@@ -1,8 +1,8 @@
-project_name: trivy-go-plugin
+project_name: scan2html
 builds:
   -
     main: main.go
-    binary: trivy-go-plugin
+    binary: scan2html
     ldflags:
       - -s -w
       - "-extldflags '-static'"
