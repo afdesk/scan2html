@@ -47,7 +47,7 @@ func main() {
 	}
 
 	createdAt := time.Now().Unix()
-	argsStr := strings.Join(os.Args[1:len(os.Args)-1], " ")
+	argsStr := strings.Replace(strings.Join(os.Args[1:len(os.Args)-1], " "), string(filepath.Separator), "/", -1)
 	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
 		reportJson, createdAt, argsStr, secondHTML))
 
