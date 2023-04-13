@@ -2,4 +2,6 @@ node_modules/
 .idea/
 .vscode/
 dist/
+first.html
+second.html
 **/.DS_Store
