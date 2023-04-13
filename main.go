@@ -21,11 +21,14 @@ func main() {
 	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
 		helpMessage()
 	}
-
-	tempFileName := filepath.Join(os.TempDir(), tempJsonFileName)
-	defer removeFile(tempFileName)
-	if err := makeTrivyJsonReport(tempFileName); err != nil {
-		log.Fatalf("failed to make trivy report: %v", err)
+	jsonResultFile := getFlagValue("--load-result")
+	if jsonResultFile == "" {
+		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
+		defer removeFile(jsonResultFile)
+		err := makeTrivyJsonReport(jsonResultFile)
+		if err != nil {
+			log.Fatalf("failed to build report: %v", err)
+		}
 	}
 
 	firstHTML, err := readPluginFile("first.html")
@@ -33,7 +36,7 @@ func main() {
 		log.Fatalf("failed to read html file: %v", err)
 	}
 
-	reportJson, err := os.ReadFile(tempFileName)
+	reportJson, err := os.ReadFile(jsonResultFile)
 	if err != nil {
 		log.Fatalf("failed to read json file: %v", err)
 	}
@@ -58,13 +61,6 @@ func removeFile(file string) {
 	if err := os.Remove(file); err != nil {
 		log.Fatalf("failed to remove file %v", err)
 	}
-}
-func readPluginFile(fileName string) ([]byte, error) {
-	ex, err := os.Executable()
-	if err != nil {
-		return nil, err
-	}
-	return os.ReadFile(filepath.Join(filepath.Dir(ex), fileName))
 }
 
 func helpMessage() {
@@ -96,4 +92,20 @@ func makeTrivyJsonReport(outputFileName string) error {
 		return err
 	}
 	return nil
+}
+
+func getFlagValue(flag string) string {
+	flagIndex := slices.Index(os.Args, flag)
+	if flagIndex != -1 && (len(os.Args)-1) > flagIndex { // the flag exists and it is not the last argument
+		return os.Args[flagIndex+1]
+	}
+	return ""
+}
+
+func readPluginFile(fileName string) ([]byte, error) {
+	ex, err := os.Executable()
+	if err != nil {
+		return nil, err
+	}
+	return os.ReadFile(filepath.Join(filepath.Dir(ex), fileName))
 }
