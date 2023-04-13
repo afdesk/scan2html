@@ -18,32 +18,30 @@ var (
 )
 
 func main() {
-	helpMessage()
-	outputFileName := os.Args[len(os.Args)-1]
-	jsonResultFile := loadResult()
-	if jsonResultFile == nil {
-		tempFileName := filepath.Join(os.TempDir(), tempJsonFileName)
-		jsonResultFile = &tempFileName
-		defer removeFile(*jsonResultFile)
-		err := makeTrivyJsonReport(*jsonResultFile)
+	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
+		helpMessage()
+	}
+	jsonResultFile := getFlagValue("--load-result")
+	if jsonResultFile == "" {
+		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
+		defer removeFile(jsonResultFile)
+		err := makeTrivyJsonReport(jsonResultFile)
 		if err != nil {
 			log.Fatalf("failed to build report: %v", err)
 		}
 	}
 
-	firstHTMLName := getPluginFileName("first.html")
-	firstHTML, err := os.ReadFile(firstHTMLName)
+	firstHTML, err := readPluginFile("first.html")
 	if err != nil {
 		log.Fatalf("failed to read html file: %v", err)
 	}
 
-	reportJson, err := os.ReadFile(*jsonResultFile)
+	reportJson, err := os.ReadFile(jsonResultFile)
 	if err != nil {
 		log.Fatalf("failed to read json file: %v", err)
 	}
 
-	secondHTMLName := getPluginFileName("second.html")
-	secondHTML, err := os.ReadFile(secondHTMLName)
+	secondHTML, err := readPluginFile("second.html")
 	if err != nil {
 		log.Fatalf("failed to read html file: %v", err)
 	}
@@ -53,7 +51,7 @@ func main() {
 	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
 		reportJson, createdAt, argsStr, secondHTML))
 
-	err = os.WriteFile(outputFileName, append(firstHTML, output...), 0600)
+	err = os.WriteFile(os.Args[len(os.Args)-1], append(firstHTML, output...), 0600)
 	if err != nil {
 		log.Fatalf("failed to write output file: %v", err)
 	}
@@ -65,17 +63,8 @@ func removeFile(file string) {
 	}
 }
 
-func getPluginFileName(fileName string) string {
-	ex, err := os.Executable()
-	if err != nil {
-		log.Fatalf("Failed to get plugin file %v", err)
-	}
-	return filepath.Join(filepath.Dir(ex), fileName)
-}
-
 func helpMessage() {
-	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
-		_, err := fmt.Printf(`
+	_, err := fmt.Printf(`
 scan2html v%s
 Usage: trivy scan2html [-h,--help] command target filename
  A Trivy plugin that scans and output the results to a html file.
@@ -87,25 +76,15 @@ Examples:
   # Scan local folder
   trivy scan2html fs . result.html
 `, version)
-		if err != nil {
-			log.Fatalf("Failed to display help message %v", err)
-		}
-		os.Exit(0)
+	if err != nil {
+		log.Fatalf("Failed to display help message %v", err)
 	}
+	os.Exit(0)
 }
 
-func loadResult() *string {
-	flagIndex := slices.Index(os.Args, "--load-result")
-	if flagIndex != -1 && (len(os.Args)-1) > flagIndex { // the flag exists and it is not the last argument
-		fileName := os.Args[flagIndex+1]
-		return &fileName
-	}
-	return nil
-}
-
-func makeTrivyJsonReport(jsonResultFile string) error {
+func makeTrivyJsonReport(outputFileName string) error {
 	trivyCommand := os.Args[1 : len(os.Args)-1]
-	cmdArgs := append(trivyCommand, "--format", "json", "--output", jsonResultFile)
+	cmdArgs := append(trivyCommand, "--format", "json", "--output", outputFileName)
 	cmd := exec.Command("trivy", cmdArgs...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -113,4 +92,20 @@ func makeTrivyJsonReport(jsonResultFile string) error {
 		return err
 	}
 	return nil
+}
+
+func getFlagValue(flag string) string {
+	flagIndex := slices.Index(os.Args, flag)
+	if flagIndex != -1 && (len(os.Args)-1) > flagIndex { // the flag exists and it is not the last argument
+		return os.Args[flagIndex+1]
+	}
+	return ""
+}
+
+func readPluginFile(fileName string) ([]byte, error) {
+	ex, err := os.Executable()
+	if err != nil {
+		return nil, err
+	}
+	return os.ReadFile(filepath.Join(filepath.Dir(ex), fileName))
 }
