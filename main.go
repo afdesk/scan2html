@@ -18,7 +18,7 @@ var (
 )
 
 func main() {
-	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
+	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") || len(os.Args) <= 1 {
 		helpMessage()
 	}
 	jsonResultFile := getFlagValue("--load-result")
