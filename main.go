@@ -51,7 +51,12 @@ func main() {
 	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
 		reportJson, createdAt, argsStr, secondHTML))
 
-	err = os.WriteFile(os.Args[len(os.Args)-1], append(firstHTML, output...), 0600)
+	htmlResultOutput := getFlagValue("--html-result")
+	if htmlResultOutput == "" {
+		log.Println("--html-result flag is not defined. Set default value result.html")
+		htmlResultOutput = "result.html"
+	}
+	err = os.WriteFile(htmlResultOutput, append(firstHTML, output...), 0600)
 	if err != nil {
 		log.Fatalf("failed to write output file: %v", err)
 	}
@@ -72,9 +77,9 @@ Options:
   -h, --help    Show usage.
 Examples:
   # Scan 'alpine:latest' image
-  trivy scan2html image alpine:latest result.html
+  trivy scan2html image alpine:latest --html-result result.html
   # Scan local folder
-  trivy scan2html fs . result.html
+  trivy scan2html fs . --html-result result.html
 `, version)
 	if err != nil {
 		log.Fatalf("Failed to display help message %v", err)
@@ -83,7 +88,8 @@ Examples:
 }
 
 func makeTrivyJsonReport(outputFileName string) error {
-	trivyCommand := os.Args[1 : len(os.Args)-1]
+	trivyCommandBorder := getFirstFlagIndex()
+	trivyCommand := os.Args[1:trivyCommandBorder]
 	cmdArgs := append(trivyCommand, "--format", "json", "--output", outputFileName)
 	cmd := exec.Command("trivy", cmdArgs...)
 	cmd.Stdout = os.Stdout
@@ -92,6 +98,16 @@ func makeTrivyJsonReport(outputFileName string) error {
 		return err
 	}
 	return nil
+}
+
+func getFirstFlagIndex() int {
+	availableFlags := []string{"--html-result", "--load-result"}
+	for i, v := range os.Args {
+		if slices.Contains(availableFlags, v) {
+			return i
+		}
+	}
+	return len(os.Args)
 }
 
 func getFlagValue(flag string) string {
