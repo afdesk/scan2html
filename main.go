@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -21,14 +22,19 @@ func main() {
 	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
 		helpMessage()
 	}
+
 	jsonResultFile := getFlagValue("--load-result")
 	if jsonResultFile == "" {
 		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
-		defer removeFile(jsonResultFile)
 		err := makeTrivyJsonReport(jsonResultFile)
 		if err != nil {
 			log.Fatalf("failed to build report: %v", err)
 		}
+		defer func(file string){
+			if err := os.Remove(file); err != nil {
+				log.Printf("failed to remove file %v", err)
+			}
+		}(jsonResultFile)
 	}
 
 	firstHTML, err := readPluginFile("first.html")
@@ -48,18 +54,12 @@ func main() {
 
 	createdAt := time.Now().Unix()
 	argsStr := strings.Replace(strings.Join(os.Args[1:len(os.Args)-1], " "), string(filepath.Separator), "/", -1)
-	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
-		reportJson, createdAt, argsStr, secondHTML))
 
-	err = os.WriteFile(os.Args[len(os.Args)-1], append(firstHTML, output...), 0600)
-	if err != nil {
+	output := bytes.NewBuffer(firstHTML)
+	fmt.Fprintf(output, "const trivyData = %s;\nconst createdAt = %d;\nconst args = %q;\n%s", reportJson, createdAt, argsStr, secondHTML)
+
+	if err = os.WriteFile(os.Args[len(os.Args)-1], output.Bytes(), 0600); err != nil {
 		log.Fatalf("failed to write output file: %v", err)
-	}
-}
-
-func removeFile(file string) {
-	if err := os.Remove(file); err != nil {
-		log.Fatalf("failed to remove file %v", err)
 	}
 }
 
