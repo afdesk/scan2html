@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"golang.org/x/xerrors"
+
 	"golang.org/x/exp/slices"
 )
 
@@ -18,32 +20,42 @@ var (
 )
 
 func main() {
+	if err := run(); err != nil {
+		log.Fatalf("failed to read html file: %v", err)
+	}
+}
+
+func run() (err error) {
 	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") {
 		helpMessage()
 	}
 	jsonResultFile := getFlagValue("--load-result")
 	if jsonResultFile == "" {
 		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
-		defer removeFile(jsonResultFile)
-		err := makeTrivyJsonReport(jsonResultFile)
+		defer func(file string) {
+			if removeErr := os.Remove(file); removeErr != nil {
+				err = xerrors.Errorf("failed to remove file: %w", removeErr)
+			}
+		}(jsonResultFile)
+		err = makeTrivyJsonReport(jsonResultFile)
 		if err != nil {
-			log.Fatalf("failed to build report: %v", err)
+			return xerrors.Errorf("failed to build report: %w", err)
 		}
 	}
 
 	firstHTML, err := readPluginFile("first.html")
 	if err != nil {
-		log.Fatalf("failed to read html file: %v", err)
+		return xerrors.Errorf("failed to read html file: %w", err)
 	}
 
 	reportJson, err := os.ReadFile(jsonResultFile)
 	if err != nil {
-		log.Fatalf("failed to read json file: %v", err)
+		return xerrors.Errorf("failed to read json file: %w", err)
 	}
 
 	secondHTML, err := readPluginFile("second.html")
 	if err != nil {
-		log.Fatalf("failed to read html file: %v", err)
+		return xerrors.Errorf("failed to read html file: %w", err)
 	}
 
 	createdAt := time.Now().Unix()
@@ -53,14 +65,9 @@ func main() {
 
 	err = os.WriteFile(os.Args[len(os.Args)-1], append(firstHTML, output...), 0600)
 	if err != nil {
-		log.Fatalf("failed to write output file: %v", err)
+		return xerrors.Errorf("failed to write output file: %w", err)
 	}
-}
-
-func removeFile(file string) {
-	if err := os.Remove(file); err != nil {
-		log.Fatalf("failed to remove file %v", err)
-	}
+	return nil
 }
 
 func helpMessage() {

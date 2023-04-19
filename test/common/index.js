@@ -4,8 +4,8 @@ const path = require("path");
 
 const TEMP_FOLDER_PATH = path.join(__dirname, '..', 'temp');
 const PROJECT_ROOT_PATH = path.join(__dirname, '..', '..');
-const SCRIPT_PATH = path.join(PROJECT_ROOT_PATH, 'scan2html');
 const TEMP_SCRIPT_PATH = path.join(TEMP_FOLDER_PATH, 'scan2html');
+const MAIN_GO_FILE = path.join(PROJECT_ROOT_PATH, 'main.go');
 
 const handleScan = (filePath, done) => (error) => {
 	if (error) {
@@ -27,14 +27,7 @@ const executeCommand = (command) => new Promise((res, rej) => {
 		return res();
 	})
 })
-const copy = (from, to) => new Promise((res, rej) => {
-	fs.copyFile(from, to, (err) => {
-		if (err) {
-			return rej(err)
-		}
-		return res();
-	});
-})
+
 /*
  reportParams: {
  	args: string, // trivy sca2nhtml image alpine report.html -> image alpine
@@ -46,7 +39,8 @@ const prepareTestEnvironment = (reportParams) => async () => {
 	if (!fs.existsSync(TEMP_FOLDER_PATH)) {
 		fs.mkdirSync(TEMP_FOLDER_PATH);
 	}
-	await copy(SCRIPT_PATH, path.join(TEMP_FOLDER_PATH, 'scan2html'))
+	// build bin file
+	await executeCommand(`go build -o ${TEMP_SCRIPT_PATH} ${MAIN_GO_FILE}`)
 
 	await executeCommand(`yarn build --dist ${TEMP_FOLDER_PATH}`)
 	if (reportParams) {
@@ -62,7 +56,7 @@ const cleanup = () => {
 module.exports = {
 	TEMP_FOLDER_PATH,
 	PROJECT_ROOT_PATH,
-	SCRIPT_PATH,
+	MAIN_GO_FILE,
 	TEMP_SCRIPT_PATH,
 	prepareTestEnvironment,
 	cleanup,

@@ -3,7 +3,6 @@
     "build": "gulp",
     "build-dev": "gulp dev",
     "build-single": "gulp single",
-    "test:int": "mocha test/integration/test.js --timeout 20000",
     "test:unit": "mocha test/unit/test.js --timeout 20000",
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open"
