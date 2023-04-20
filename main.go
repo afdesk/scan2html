@@ -15,6 +15,7 @@ import (
 var (
 	tempJsonFileName = "scan2html-report-temp.json"
 	version          = "dev"
+	availableFlags   = []string{"--html-result", "--load-result"}
 )
 
 func main() {
@@ -47,7 +48,7 @@ func main() {
 	}
 
 	createdAt := time.Now().Unix()
-	argsStr := strings.Replace(strings.Join(os.Args[1:len(os.Args)-1], " "), string(filepath.Separator), "/", -1)
+	argsStr := strings.Replace(strings.Join(os.Args[1:], " "), string(filepath.Separator), "/", -1)
 	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
 		reportJson, createdAt, argsStr, secondHTML))
 
@@ -88,8 +89,7 @@ Examples:
 }
 
 func makeTrivyJsonReport(outputFileName string) error {
-	trivyCommandBorder := getFirstFlagIndex()
-	trivyCommand := os.Args[1:trivyCommandBorder]
+	trivyCommand := excludePluginFlags(os.Args, availableFlags)[1:]
 	cmdArgs := append(trivyCommand, "--format", "json", "--output", outputFileName)
 	cmd := exec.Command("trivy", cmdArgs...)
 	cmd.Stdout = os.Stdout
@@ -100,14 +100,21 @@ func makeTrivyJsonReport(outputFileName string) error {
 	return nil
 }
 
-func getFirstFlagIndex() int {
-	availableFlags := []string{"--html-result", "--load-result"}
-	for i, v := range os.Args {
-		if slices.Contains(availableFlags, v) {
-			return i
+func excludePluginFlags(args []string, exclude []string) []string {
+	result := make([]string, 0, len(args))
+	var excludeIndices []int
+	for i := 0; i < len(args); i++ {
+		flagIndex := slices.Index(exclude, args[i])
+		if flagIndex != -1 && len(args)-1 > flagIndex {
+			excludeIndices = append(excludeIndices, i, i+1) // exclude flag and value
 		}
 	}
-	return len(os.Args)
+	for i, arg := range args {
+		if slices.Index(excludeIndices, i) == -1 {
+			result = append(result, arg)
+		}
+	}
+	return result
 }
 
 func getFlagValue(flag string) string {
