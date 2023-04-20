@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -22,14 +23,19 @@ func main() {
 	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") || len(os.Args) <= 1 {
 		helpMessage()
 	}
+
 	jsonResultFile := getFlagValue("--load-result")
 	if jsonResultFile == "" {
 		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
-		defer removeFile(jsonResultFile)
 		err := makeTrivyJsonReport(jsonResultFile)
 		if err != nil {
 			log.Fatalf("failed to build report: %v", err)
 		}
+		defer func(file string) {
+			if err := os.Remove(file); err != nil {
+				log.Printf("failed to remove file %v", err)
+			}
+		}(jsonResultFile)
 	}
 
 	firstHTML, err := readPluginFile("first.html")
@@ -49,23 +55,18 @@ func main() {
 
 	createdAt := time.Now().Unix()
 	argsStr := strings.Replace(strings.Join(os.Args[1:], " "), string(filepath.Separator), "/", -1)
-	output := []byte(fmt.Sprintf("const trivyData = %s;\nconst createdAt = %d;\nconst args = \"%s\";\n%s",
-		reportJson, createdAt, argsStr, secondHTML))
+
+	output := bytes.NewBuffer(firstHTML)
+	fmt.Fprintf(output, "const trivyData = %s;\nconst createdAt = %d;\nconst args = %q;\n%s", reportJson, createdAt, argsStr, secondHTML)
 
 	htmlResultOutput := getFlagValue("--html-result")
 	if htmlResultOutput == "" {
 		log.Println("--html-result flag is not defined. Set default value result.html")
 		htmlResultOutput = "result.html"
 	}
-	err = os.WriteFile(htmlResultOutput, append(firstHTML, output...), 0600)
+	err = os.WriteFile(htmlResultOutput, output.Bytes(), 0600)
 	if err != nil {
 		log.Fatalf("failed to write output file: %v", err)
-	}
-}
-
-func removeFile(file string) {
-	if err := os.Remove(file); err != nil {
-		log.Fatalf("failed to remove file %v", err)
 	}
 }
 
