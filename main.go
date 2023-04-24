@@ -23,11 +23,11 @@ func main() {
 	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") || len(os.Args) <= 1 {
 		helpMessage()
 	}
-
-	jsonResultFile := getFlagValue("--load-result")
+	trivyCommand, pluginFlags := splitPluginArguments()
+	jsonResultFile := pluginFlags["--load-result"]
 	if jsonResultFile == "" {
 		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
-		err := makeTrivyJsonReport(jsonResultFile)
+		err := makeTrivyJsonReport(jsonResultFile, trivyCommand)
 		if err != nil {
 			log.Fatalf("failed to build report: %v", err)
 		}
@@ -59,7 +59,7 @@ func main() {
 	output := bytes.NewBuffer(firstHTML)
 	fmt.Fprintf(output, "const trivyData = %s;\nconst createdAt = %d;\nconst args = %q;\n%s", reportJson, createdAt, argsStr, secondHTML)
 
-	htmlResultOutput := getFlagValue("--html-result")
+	htmlResultOutput := pluginFlags["--html-result"]
 	if htmlResultOutput == "" {
 		log.Println("--html-result flag is not defined. Set default value result.html")
 		htmlResultOutput = "result.html"
@@ -89,8 +89,7 @@ Examples:
 	os.Exit(0)
 }
 
-func makeTrivyJsonReport(outputFileName string) error {
-	trivyCommand := excludePluginFlags(os.Args, availableFlags)[1:]
+func makeTrivyJsonReport(outputFileName string, trivyCommand []string) error {
 	cmdArgs := append(trivyCommand, "--format", "json", "--output", outputFileName)
 	cmd := exec.Command("trivy", cmdArgs...)
 	cmd.Stdout = os.Stdout
@@ -101,29 +100,24 @@ func makeTrivyJsonReport(outputFileName string) error {
 	return nil
 }
 
-func excludePluginFlags(args []string, exclude []string) []string {
-	result := make([]string, 0, len(args))
-	var excludeIndices []int
-	for i := 0; i < len(args); i++ {
-		flagIndex := slices.Index(exclude, args[i])
-		if flagIndex != -1 && len(args)-1 > flagIndex {
-			excludeIndices = append(excludeIndices, i, i+1) // exclude flag and value
+func splitPluginArguments() ([]string, map[string]string) {
+	trivyCommand := make([]string, 0, len(os.Args))
+	excludeMap := make(map[int]bool)
+	pluginFlags := make(map[string]string)
+	for i := 0; i < len(os.Args); i++ {
+		flagIndex := slices.Index(availableFlags, os.Args[i])
+		if flagIndex != -1 && len(os.Args)-1 > flagIndex {
+			pluginFlags[os.Args[i]] = os.Args[i+1]
+			excludeMap[i] = true
+			excludeMap[i+1] = true
 		}
 	}
-	for i, arg := range args {
-		if slices.Index(excludeIndices, i) == -1 {
-			result = append(result, arg)
+	for i, arg := range os.Args {
+		if !excludeMap[i] {
+			trivyCommand = append(trivyCommand, arg)
 		}
 	}
-	return result
-}
-
-func getFlagValue(flag string) string {
-	flagIndex := slices.Index(os.Args, flag)
-	if flagIndex != -1 && (len(os.Args)-1) > flagIndex { // the flag exists and it is not the last argument
-		return os.Args[flagIndex+1]
-	}
-	return ""
+	return trivyCommand[1:], pluginFlags
 }
 
 func readPluginFile(fileName string) ([]byte, error) {
