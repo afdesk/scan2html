@@ -29,18 +29,18 @@ function attachLinksInteractivity() {
   });
 
   document
-    .querySelectorAll("a.toggle-more-links")
-    .forEach(function (toggleLink) {
-      toggleLink.onclick = function () {
-        const expanded =
-          toggleLink.parentElement.getAttribute("data-more-links");
-        toggleLink.parentElement.setAttribute(
-          "data-more-links",
-          "on" === expanded ? "off" : "on"
-        );
-        return false;
-      };
-    });
+      .querySelectorAll("a.toggle-more-links")
+      .forEach(function (toggleLink) {
+        toggleLink.onclick = function () {
+          const expanded =
+              toggleLink.parentElement.getAttribute("data-more-links");
+          toggleLink.parentElement.setAttribute(
+              "data-more-links",
+              "on" === expanded ? "off" : "on"
+          );
+          return false;
+        };
+      });
 }
 
 function attachFilterInteractivity() {
@@ -61,12 +61,12 @@ function attachFilterInteractivity() {
   function applyFilters(filterValue) {
     filterable.forEach((f) => {
       const cellValues = cellClasses
-        .map((cl) => f.querySelector(cl))
-        .filter((cell) => cell !== null)
-        .map((cell) => cell.textContent || cell.innerText);
+          .map((cl) => f.querySelector(cl))
+          .filter((cell) => cell !== null)
+          .map((cell) => cell.textContent || cell.innerText);
 
       const condition = cellValues.some((cellValue) =>
-        cellValue.toUpperCase().includes(filterValue.toUpperCase())
+          cellValue.toUpperCase().includes(filterValue.toUpperCase())
       );
 
       f.style.display = condition ? "" : "none";
@@ -124,8 +124,33 @@ function attachSortInteractivity() {
   });
 }
 
+function attachDependencyTreeInteractivity() {
+  const collapsable = document.querySelectorAll(".dependency-tree-node__dots");
+
+  collapsable.forEach((col) => {
+    col.addEventListener("click", () => {
+      const topParent = col.closest(
+          ".tree > li > ul.dependency-tree-node__children.original > .dependency-tree-node__container"
+      );
+      let original, collapsed;
+      for (let i = 0; i < topParent.children.length; i++) {
+        if (topParent.children[i].classList.contains("original")) {
+          original = topParent.children[i];
+          continue;
+        }
+        if (topParent.children[i].classList.contains("collapsed")) {
+          collapsed = topParent.children[i];
+        }
+      }
+      original.classList.remove("hidden");
+      collapsed.classList.add("hidden");
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   attachLinksInteractivity();
   attachSortInteractivity();
   attachFilterInteractivity();
+  attachDependencyTreeInteractivity();
 });
