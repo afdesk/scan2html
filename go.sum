@@ -1,2 +1,4 @@
+github.com/afdesk/trivy-go-plugin v0.0.0-20230425141703-7d18a52213b0 h1:qiTZkVBNiuZ5a5Ty3utTppE4gj8uLRtXKMKBmEiw56c=
+github.com/afdesk/trivy-go-plugin v0.0.0-20230425141703-7d18a52213b0/go.mod h1:3Hr/uqhzXikRerTBeW/OUMzU9lbZ5/YBF6bGMiMoyM4=
 golang.org/x/exp v0.0.0-20230321023759-10a507213a29 h1:ooxPy7fPvB4kwsA2h+iBNHkAbp/4JxTSwCmvdjEYmug=
 golang.org/x/exp v0.0.0-20230321023759-10a507213a29/go.mod h1:CxIveKay+FTh1D0yPZemJVgC/95VzuuOLq5Qi4xnoYc=
