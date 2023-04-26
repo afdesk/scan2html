@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
 
-	"golang.org/x/exp/slices"
+	"github.com/afdesk/trivy-go-plugin/pkg/common"
 )
 
 var (
@@ -20,14 +19,14 @@ var (
 )
 
 func main() {
-	if slices.Contains(os.Args, "-h") || slices.Contains(os.Args, "--help") || len(os.Args) <= 1 {
+	if common.IsHelp() || len(os.Args) <= 1 {
 		helpMessage()
 	}
-	trivyCommand, pluginFlags := splitPluginArguments()
+	pluginFlags, trivyCommand := common.RetrievePluginArguments(availableFlags)
 	jsonResultFile := pluginFlags["--load-result"]
 	if jsonResultFile == "" {
 		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
-		err := makeTrivyJsonReport(jsonResultFile, trivyCommand)
+		err := common.MakeTrivyJsonReport(trivyCommand, jsonResultFile)
 		if err != nil {
 			log.Fatalf("failed to build report: %v", err)
 		}
@@ -38,7 +37,7 @@ func main() {
 		}(jsonResultFile)
 	}
 
-	firstHTML, err := readPluginFile("first.html")
+	firstHTML, err := common.ReadPluginFile("first.html")
 	if err != nil {
 		log.Fatalf("failed to read html file: %v", err)
 	}
@@ -48,7 +47,7 @@ func main() {
 		log.Fatalf("failed to read json file: %v", err)
 	}
 
-	secondHTML, err := readPluginFile("second.html")
+	secondHTML, err := common.ReadPluginFile("second.html")
 	if err != nil {
 		log.Fatalf("failed to read html file: %v", err)
 	}
@@ -87,43 +86,4 @@ Examples:
 		log.Fatalf("Failed to display help message %v", err)
 	}
 	os.Exit(0)
-}
-
-func makeTrivyJsonReport(outputFileName string, trivyCommand []string) error {
-	cmdArgs := append(trivyCommand, "--format", "json", "--output", outputFileName)
-	cmd := exec.Command("trivy", cmdArgs...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func splitPluginArguments() ([]string, map[string]string) {
-	trivyCommand := make([]string, 0, len(os.Args))
-	excludeMap := make(map[int]bool)
-	pluginFlags := make(map[string]string)
-	for i := 0; i < len(os.Args); i++ {
-		flagIndex := slices.Index(availableFlags, os.Args[i])
-		if flagIndex != -1 && len(os.Args)-1 > flagIndex {
-			pluginFlags[os.Args[i]] = os.Args[i+1]
-			excludeMap[i] = true
-			excludeMap[i+1] = true
-		}
-	}
-	for i, arg := range os.Args {
-		if !excludeMap[i] {
-			trivyCommand = append(trivyCommand, arg)
-		}
-	}
-	return trivyCommand[1:], pluginFlags
-}
-
-func readPluginFile(fileName string) ([]byte, error) {
-	ex, err := os.Executable()
-	if err != nil {
-		return nil, err
-	}
-	return os.ReadFile(filepath.Join(filepath.Dir(ex), fileName))
 }
