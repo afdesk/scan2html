@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "plugin.yaml"
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    uses: afdesk/trivy-go-plugin/.github/workflows/check-version.yaml@main
+
+  build:
+    name: "Build application"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: check-version
+    if: ${{ needs.check-version.outputs.next_version != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use Node ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install deps
+        run: yarn
+      - name: Build
+        run: yarn build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: template
+          path: dist/*.html
+
+  release:
+    needs: check-version
+    uses: afdesk/trivy-go-plugin/.github/workflows/release-go.yaml@main
+    with:
+      next-version: '${{ needs.check-version.outputs.next-version }}'
