@@ -2,88 +2,71 @@ package main
 
 import (
 	"bytes"
-	"fmt"
+	_ "embed"
+	"encoding/json"
+	"io"
 	"log"
 	"os"
-	"path/filepath"
-	"strings"
-	"time"
+	"text/template"
 
-	"github.com/afdesk/trivy-go-plugin/pkg/common"
+	"github.com/aquasecurity/trivy/pkg/types"
+	"github.com/spf13/cobra"
+	"golang.org/x/xerrors"
 )
 
-var (
-	tempJsonFileName = "scan2html-report-temp.json"
-	version          = "dev"
-	availableFlags   = []string{"--html-result", "--load-result"}
-)
+//go:embed src/html.tpl
+var htmlTmpl []byte
 
 func main() {
-	if common.IsHelp() || len(os.Args) <= 1 {
-		helpMessage()
-	}
-	pluginFlags, trivyCommand := common.RetrievePluginArguments(availableFlags)
-	jsonResultFile := pluginFlags["--load-result"]
-	if jsonResultFile == "" {
-		jsonResultFile = filepath.Join(os.TempDir(), tempJsonFileName)
-		err := common.MakeTrivyJsonReport(trivyCommand, jsonResultFile)
-		if err != nil {
-			log.Fatalf("failed to build report: %v", err)
-		}
-		defer func(file string) {
-			if err := os.Remove(file); err != nil {
-				log.Printf("failed to remove file %v", err)
-			}
-		}(jsonResultFile)
-	}
-
-	firstHTML, err := common.ReadPluginFile("first.html")
+	rootCmd, err := initFlags()
 	if err != nil {
-		log.Fatalf("failed to read html file: %v", err)
+		log.Fatalf("%+v", err)
 	}
 
-	reportJson, err := os.ReadFile(jsonResultFile)
-	if err != nil {
-		log.Fatalf("failed to read json file: %v", err)
-	}
-
-	secondHTML, err := common.ReadPluginFile("second.html")
-	if err != nil {
-		log.Fatalf("failed to read html file: %v", err)
-	}
-
-	createdAt := time.Now().Unix()
-	argsStr := strings.Replace(strings.Join(os.Args[1:], " "), string(filepath.Separator), "/", -1)
-
-	output := bytes.NewBuffer(firstHTML)
-	fmt.Fprintf(output, "const trivyData = %s;\nconst createdAt = %d;\nconst args = %q;\n%s", reportJson, createdAt, argsStr, secondHTML)
-
-	htmlResultOutput := pluginFlags["--html-result"]
-	if htmlResultOutput == "" {
-		log.Println("--html-result flag is not defined. Set default value result.html")
-		htmlResultOutput = "result.html"
-	}
-	err = os.WriteFile(htmlResultOutput, output.Bytes(), 0600)
-	if err != nil {
-		log.Fatalf("failed to write output file: %v", err)
+	if err = rootCmd.Execute(); err != nil {
+		log.Fatalf("%+v", err)
 	}
 }
 
-func helpMessage() {
-	_, err := fmt.Printf(`
-scan2html v%s
-Usage: trivy scan2html [-h,--help] command target filename
- A Trivy plugin that scans and output the results to a html file.
-Options:
-  -h, --help    Show usage.
-Examples:
-  # Scan 'alpine:latest' image
-  trivy scan2html image alpine:latest --html-result result.html
-  # Scan local folder
-  trivy scan2html fs . --html-result result.html
-`, version)
-	if err != nil {
-		log.Fatalf("Failed to display help message %v", err)
+func initFlags() (*cobra.Command, error) {
+	var fileName string
+	rootCmd := &cobra.Command{
+		Use: "scan2html",
+		CompletionOptions: cobra.CompletionOptions{
+			DisableDefaultCmd: true,
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runPlugin(fileName)
+		},
 	}
-	os.Exit(0)
+	rootCmd.PersistentFlags().StringVar(&fileName, "file", "trivy-report.html", "file to save html report")
+	return rootCmd, nil
+}
+
+func runPlugin(fileName string) error {
+	inputData, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		return xerrors.Errorf("error reading trivy output: %v\n", err)
+	}
+
+	var output types.Report
+	if err := json.NewDecoder(bytes.NewReader(inputData)).Decode(&output); err != nil {
+		return xerrors.Errorf("error decoding body: %v\n", err)
+	}
+
+	tmpl, err := template.New("temp").Parse(string(htmlTmpl))
+	if err != nil {
+		return xerrors.Errorf("error parsing template: %v\n", err)
+	}
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		return xerrors.Errorf("error creating file: %v\n", err)
+	}
+	defer file.Close()
+
+	if err := tmpl.Execute(file, output); err != nil {
+		return xerrors.Errorf("error executing template: %v\n", err)
+	}
+	return nil
 }
