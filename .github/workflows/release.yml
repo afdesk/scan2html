@@ -16,26 +16,20 @@ jobs:
 
   build:
     name: "Build application"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     needs: check-version
     if: ${{ needs.check-version.outputs.next_version != '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          node-version: ${{ matrix.node }}
-      - name: Install deps
-        run: yarn
-      - name: Build
-        run: yarn build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: template
-          path: dist/*.html
+          go-version: 1.23.3
+
 
   release:
     needs: check-version
