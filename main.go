@@ -1,21 +1,15 @@
 package main
 
 import (
-	"bytes"
-	_ "embed"
-	"encoding/json"
 	"io"
 	"log"
 	"os"
-	"text/template"
 
-	"github.com/aquasecurity/trivy/pkg/types"
 	"github.com/spf13/cobra"
 	"golang.org/x/xerrors"
-)
 
-//go:embed template/html.tpl
-var htmlTmpl []byte
+	"github.com/afdesk/scan2html/render"
+)
 
 func main() {
 	rootCmd, err := initFlags()
@@ -48,25 +42,10 @@ func runPlugin(fileName string) error {
 	if err != nil {
 		return xerrors.Errorf("error reading trivy output: %v\n", err)
 	}
-
-	var output types.Report
-	if err := json.NewDecoder(bytes.NewReader(inputData)).Decode(&output); err != nil {
-		return xerrors.Errorf("error decoding body: %v\n", err)
-	}
-
-	tmpl, err := template.New("temp").Parse(string(htmlTmpl))
+	err = render.Render(fileName, inputData)
 	if err != nil {
-		return xerrors.Errorf("error parsing template: %v\n", err)
+		return err
 	}
 
-	file, err := os.Create(fileName)
-	if err != nil {
-		return xerrors.Errorf("error creating file: %v\n", err)
-	}
-	defer file.Close()
-
-	if err := tmpl.Execute(file, output); err != nil {
-		return xerrors.Errorf("error executing template: %v\n", err)
-	}
 	return nil
 }

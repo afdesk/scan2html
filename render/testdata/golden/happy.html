@@ -1,4 +1,3 @@
-<!-- split first.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -492,24 +491,16 @@
 </head>
 <body>
 <main id="root">
-{{- if .Results }}
-    <h1 id="report-title">Trivy Report - <span class="report-title__target"> {{ ( index .Results 0 ).Target }}</span> - <span
-            id='current-time'></span>
+    <h1 id="report-title">Trivy Report - <span class="report-title__target"> alpine:latest</span>
     </h1>
     <div class="filter_bar">
         <input type="text" placeholder="Search.."
                title="Search by package, vulnerability id, severity, installed version"
                class="filter_bar__filter_name search">
     </div>
-
-
-{{- range .Results }}
-{{- if or .Vulnerabilities .Misconfigurations .Secrets}}
     <div class="header">
-        <h3 class="header__title ta-center"> {{ .Target}} </h3>
+        <h3 class="header__title ta-center"> alpine:latest </h3>
     </div>
-
-{{- if .Vulnerabilities }}
     <table>
         <thead>
         <tr class="sub-header">
@@ -552,132 +543,46 @@
         </tr>
           </thead>
            <tbody data-main="true">
-    {{- range .Vulnerabilities }}
         <tr class="filterable">
-            <td class="pkg-name break-word">{{ .PkgName }}</td>
-            <td class="vuln">{{ .VulnerabilityID }}</td>
-            <td class="severity ta-center">{{ .Vulnerability.Severity }}</td>
-            <td class="pkg-version ta-center">{{ .InstalledVersion }}</td>
-            <td>{{ .FixedVersion }}</td>
+            <td class="pkg-name break-word">libcrypto3</td>
+            <td class="vuln">CVE-2024-9143</td>
+            <td class="severity ta-center">LOW</td>
+            <td class="pkg-version ta-center">3.3.2-r0</td>
+            <td>3.3.2-r1</td>
             <td class="links"  data-more-links="off">
-                 {{- range .Vulnerability.References }}
-                <a href={{ . | printf "%q" }}>{{ . }}</a>
-                {{- end }}
+                <a href="https://access.redhat.com/security/cve/CVE-2024-9143">https://access.redhat.com/security/cve/CVE-2024-9143</a>
+                <a href="https://github.com/openssl/openssl/commit/72ae83ad214d2eef262461365a1975707f862712">https://github.com/openssl/openssl/commit/72ae83ad214d2eef262461365a1975707f862712</a>
+                <a href="https://github.com/openssl/openssl/commit/bc7e04d7c8d509fb78fc0e285aa948fb0da04700">https://github.com/openssl/openssl/commit/bc7e04d7c8d509fb78fc0e285aa948fb0da04700</a>
+                <a href="https://github.com/openssl/openssl/commit/c0d3e4d32d2805f49bec30547f225bc4d092e1f4">https://github.com/openssl/openssl/commit/c0d3e4d32d2805f49bec30547f225bc4d092e1f4</a>
+                <a href="https://github.com/openssl/openssl/commit/fdf6723362ca51bd883295efe206cb5b1cfa5154">https://github.com/openssl/openssl/commit/fdf6723362ca51bd883295efe206cb5b1cfa5154</a>
+                <a href="https://github.openssl.org/openssl/extended-releases/commit/8efc0cbaa8ebba8e116f7b81a876a4123594d86a">https://github.openssl.org/openssl/extended-releases/commit/8efc0cbaa8ebba8e116f7b81a876a4123594d86a</a>
+                <a href="https://github.openssl.org/openssl/extended-releases/commit/9d576994cec2b7aa37a91740ea7e680810957e41">https://github.openssl.org/openssl/extended-releases/commit/9d576994cec2b7aa37a91740ea7e680810957e41</a>
+                <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-9143">https://nvd.nist.gov/vuln/detail/CVE-2024-9143</a>
+                <a href="https://openssl-library.org/news/secadv/20241016.txt">https://openssl-library.org/news/secadv/20241016.txt</a>
+                <a href="https://www.cve.org/CVERecord?id=CVE-2024-9143">https://www.cve.org/CVERecord?id=CVE-2024-9143</a>
             </td>
         </tr>
-    {{- end}}
+        <tr class="filterable">
+            <td class="pkg-name break-word">libssl3</td>
+            <td class="vuln">CVE-2024-9143</td>
+            <td class="severity ta-center">LOW</td>
+            <td class="pkg-version ta-center">3.3.2-r0</td>
+            <td>3.3.2-r1</td>
+            <td class="links"  data-more-links="off">
+                <a href="https://access.redhat.com/security/cve/CVE-2024-9143">https://access.redhat.com/security/cve/CVE-2024-9143</a>
+                <a href="https://github.com/openssl/openssl/commit/72ae83ad214d2eef262461365a1975707f862712">https://github.com/openssl/openssl/commit/72ae83ad214d2eef262461365a1975707f862712</a>
+                <a href="https://github.com/openssl/openssl/commit/bc7e04d7c8d509fb78fc0e285aa948fb0da04700">https://github.com/openssl/openssl/commit/bc7e04d7c8d509fb78fc0e285aa948fb0da04700</a>
+                <a href="https://github.com/openssl/openssl/commit/c0d3e4d32d2805f49bec30547f225bc4d092e1f4">https://github.com/openssl/openssl/commit/c0d3e4d32d2805f49bec30547f225bc4d092e1f4</a>
+                <a href="https://github.com/openssl/openssl/commit/fdf6723362ca51bd883295efe206cb5b1cfa5154">https://github.com/openssl/openssl/commit/fdf6723362ca51bd883295efe206cb5b1cfa5154</a>
+                <a href="https://github.openssl.org/openssl/extended-releases/commit/8efc0cbaa8ebba8e116f7b81a876a4123594d86a">https://github.openssl.org/openssl/extended-releases/commit/8efc0cbaa8ebba8e116f7b81a876a4123594d86a</a>
+                <a href="https://github.openssl.org/openssl/extended-releases/commit/9d576994cec2b7aa37a91740ea7e680810957e41">https://github.openssl.org/openssl/extended-releases/commit/9d576994cec2b7aa37a91740ea7e680810957e41</a>
+                <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-9143">https://nvd.nist.gov/vuln/detail/CVE-2024-9143</a>
+                <a href="https://openssl-library.org/news/secadv/20241016.txt">https://openssl-library.org/news/secadv/20241016.txt</a>
+                <a href="https://www.cve.org/CVERecord?id=CVE-2024-9143">https://www.cve.org/CVERecord?id=CVE-2024-9143</a>
+            </td>
+        </tr>
     </tbody>
     </table>
-{{- end }}
-
-    {{- if .Misconfigurations }}
-        <table>
-            <thead>
-            <tr class="sub-header">
-                <th data-type="string" data-sortable="true"><span> Type </span>
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="16" height="16" viewBox="0 0 16 16">
-                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
-                    </svg>
-                </th>
-                <th data-type="string" data-sortable="true"><span> Misconf ID </span>
-                    <svg
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
-                    </svg>
-                </th>
-                <th data-type="string" data-sortable="true"><span> Check </span>
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="16" height="16" viewBox="0 0 16 16">
-                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
-                    </svg>
-                </th>
-                <th data-type="severity" data-sortable="true"><span> Severity </span>
-                    <svg
-                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
-                    </svg>
-                </th>
-
-                <th data-type="string" data-sortable="false"><span> Message </span>
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="16" height="16" viewBox="0 0 16 16">
-                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
-                    </svg>
-                </th>
-            </tr>
-              </thead>
-               <tbody data-main="true">
-
-        {{- range .Misconfigurations }}
-            <tr class="filterable">
-                <td class="misc-type">{{ .Type}}</td>
-                <td class="misc-id">{{ .ID }}</td>
-                <td class="misc-check">{{ .Title }}</td>
-                <td class="misc-sev">{{ .Severity }}</td>
-                <td class="misc-msg">{{ .Message }}
-                 <br>
-                 <a href={{ .PrimaryURL | printf "%q" }}>{{ .PrimaryURL }}</a>
-                 </br>
-                </td>
-            </tr>
-        {{- end}}
-        </tbody>
-        </table>
-{{- end }}
-
-{{- if .Secrets }}
-<div class="secret-results">
-        <h3 class="secret-results__title">
-            <span class="secret-results__title-target"> {{ .Target }}</span>
-            <span class="secret-results__title-class"> ({{ .Class }})</span>
-        </h3>
-
-        <div class="secret-results__content">
-        {{- $target := .Target }}
-        {{- range .Secrets }}
-        <div class="secret">
-                <div class="secret__head">
-                    <span class="secret__severity severity-{{ .Severity }}"> {{ .Severity }} </span>
-                    <span class="secret__type"> {{.Category}} ({{ .RuleID }})</span>
-                </div>
-                <div class="secret__title"> {{ .Title }}</div>
-                <div class="secret__src">
-                    <span class="secret__src-file">{{ $target}}</span>
-                    <span class="secret__src-delimiter">:</span>
-                    <span class="secret__src-lines">
-                    {{ if eq .StartLine .EndLine }}
-                                {{ .StartLine }}
-                            {{ else }}
-                                {{ .StartLine }} - {{ .EndLine }}
-                            {{ end }}</span>
-                </div>
-                <div class="secret__code">
-                {{- range .Code.Lines }}
-                {{- if .IsCause}}
-                <div class="secret__line secret__line-cause">
-                        <div class="secret__line-number">{{ .Number}}</div>
-                        <div class="secret__line-code">
-                        <pre> {{.Content}}</pre>
-                        </div>
-                    </div>
-                {{- else}}
-                <div class="secret__line">
-                        <div class="secret__line-number">{{ .Number}}</div>
-                        <div class="secret__line-code">
-                        <pre> {{.Content}} </pre>
-                        </div>
-                    </div>
-                {{- end }}
-                {{- end}}
-                </div>
-           </div>
-        </div>
-          {{- end}}
-    </div>
-  {{- end}}
-
-{{- if .Packages }}
  <div class="header">
         <h3 class="header__title ta-center">Packages</h3>
     </div>
@@ -719,24 +624,138 @@
         </tr>
           </thead>
            <tbody data-main="true">
-    {{- range .Packages }}
         <tr class="filterable">
-            <td class="pkg-version">{{ .ID }}</td>
-            <td class=".pkg-key-name">{{ .Name }}</td>
-            <td class="pkg-key-version ta-center">{{ .Version }}</td>
-            <td class="pkg-key-src-name">{{ .SrcName }}</td>
-            <td class=".pkg-key-src-version">{{ .SrcVersion }}</td>
+            <td class="pkg-version">libfreetype6@2.13.2+dfsg-1build3</td>
+            <td class=".pkg-key-name">libfreetype6</td>
+            <td class="pkg-key-version ta-center">2.13.2+dfsg</td>
+            <td class="pkg-key-src-name">freetype</td>
+            <td class=".pkg-key-src-version">2.13.2+dfsg</td>
         </tr>
-    {{- end}}
+        <tr class="filterable">
+            <td class="pkg-version">libgcc-s1@14-20240412-0ubuntu1</td>
+            <td class=".pkg-key-name">libgcc-s1</td>
+            <td class="pkg-key-version ta-center">14-20240412</td>
+            <td class="pkg-key-src-name">gcc-14</td>
+            <td class=".pkg-key-src-version">14-20240412</td>
+        </tr>
     </tbody>
     </table>
-{{- end }}
+    <div class="header">
+        <h3 class="header__title ta-center"> alpine:latest </h3>
+    </div>
+        <table>
+            <thead>
+            <tr class="sub-header">
+                <th data-type="string" data-sortable="true"><span> Type </span>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                    </svg>
+                </th>
+                <th data-type="string" data-sortable="true"><span> Misconf ID </span>
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                    </svg>
+                </th>
+                <th data-type="string" data-sortable="true"><span> Check </span>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                    </svg>
+                </th>
+                <th data-type="severity" data-sortable="true"><span> Severity </span>
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                    </svg>
+                </th>
 
-{{- end }}
-{{- end }}
-{{- else }}
-<h2> Trivy Returned Empty Report <h2>
-{{- end }}
+                <th data-type="string" data-sortable="false"><span> Message </span>
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="16" height="16" viewBox="0 0 16 16">
+                        <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                    </svg>
+                </th>
+            </tr>
+              </thead>
+               <tbody data-main="true">
+            <tr class="filterable">
+                <td class="misc-type">Dockerfile Security Check</td>
+                <td class="misc-id">DS001</td>
+                <td class="misc-check">':latest' tag used</td>
+                <td class="severity ta-center">MEDIUM</td>
+                <td class="misc-msg">Specify a tag in the 'FROM' statement for image 'ansibleplaybookbundle/apb-base'
+                 <br>
+                 <a href="https://avd.aquasec.com/misconfig/ds001">https://avd.aquasec.com/misconfig/ds001</a>
+                 </br>
+                </td>
+            </tr>
+            <tr class="filterable">
+                <td class="misc-type">Dockerfile Security Check</td>
+                <td class="misc-id">DS011</td>
+                <td class="misc-check">COPY with more than two arguments not ending with slash</td>
+                <td class="severity ta-center">CRITICAL</td>
+                <td class="misc-msg">Slash is expected at the end of COPY command argument '}}'
+                 <br>
+                 <a href="https://avd.aquasec.com/misconfig/ds011">https://avd.aquasec.com/misconfig/ds011</a>
+                 </br>
+                </td>
+            </tr>
+            <tr class="filterable">
+                <td class="misc-type">Dockerfile Security Check</td>
+                <td class="misc-id">DS026</td>
+                <td class="misc-check">No HEALTHCHECK defined</td>
+                <td class="severity ta-center">LOW</td>
+                <td class="misc-msg">Add HEALTHCHECK instruction in your Dockerfile
+                 <br>
+                 <a href="https://avd.aquasec.com/misconfig/ds026">https://avd.aquasec.com/misconfig/ds026</a>
+                 </br>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    <div class="header">
+        <h3 class="header__title ta-center"> /etc/ssl/private/ssl-cert-snakeoil.key </h3>
+    </div>
+<div class="secret-results">
+        <h3 class="secret-results__title">
+            <span class="secret-results__title-target"> /etc/ssl/private/ssl-cert-snakeoil.key</span>
+            <span class="secret-results__title-class"> (secret)</span>
+        </h3>
+
+        <div class="secret-results__content">
+        <div class="secret">
+                <div class="secret__head">
+                    <span class="secret__severity severity-HIGH"> HIGH </span>
+                    <span class="secret__type"> AsymmetricPrivateKey (private-key)</span>
+                </div>
+                <div class="secret__title"> Asymmetric Private Key</div>
+                <div class="secret__src">
+                    <span class="secret__src-file">/etc/ssl/private/ssl-cert-snakeoil.key</span>
+                    <span class="secret__src-delimiter">:</span>
+                    <span class="secret__src-lines">
+                    
+                                1
+                            </span>
+                </div>
+                <div class="secret__code">
+                <div class="secret__line secret__line-cause">
+                        <div class="secret__line-number">1</div>
+                        <div class="secret__line-code">
+                        <pre> -----BEGIN PRIVATE KEY-----*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY</pre>
+                        </div>
+                    </div>
+                <div class="secret__line">
+                        <div class="secret__line-number">2</div>
+                        <div class="secret__line-code">
+                        <pre>  </pre>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        </div>
+    </div>
 </main>
 </body>
 </html>
