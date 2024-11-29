@@ -2,7 +2,7 @@ name: Test
 on:
   pull_request:
     branches:
-      - '*'
+      - '**'
 env:
   GO_VERSION: '1.23.2'
 
