@@ -381,6 +381,8 @@
           const cellClasses = [
             ".pkg-name",
             ".vuln",
+            ".misc-type",
+            ".misc-id",
             ".severity",
             ".pkg-version",
             ".pkg-key-name",
@@ -584,13 +586,13 @@
                         <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
                     </svg>
                 </th>
-                <th data-type="severity" data-sortable="true"><span> Check </span>
+                <th data-type="string" data-sortable="true"><span> Check </span>
                     <svg xmlns="http://www.w3.org/2000/svg"
                          width="16" height="16" viewBox="0 0 16 16">
                         <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
                     </svg>
                 </th>
-                <th data-type="string" data-sortable="true"><span> Severity </span>
+                <th data-type="severity" data-sortable="true"><span> Severity </span>
                     <svg
                             xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                         <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
@@ -622,6 +624,112 @@
         {{- end}}
         </tbody>
         </table>
+{{- end }}
+
+{{- if .Secrets }}
+<div class="secret-results">
+        <h3 class="secret-results__title">
+            <span class="secret-results__title-target"> {{ .Target }}</span>
+            <span class="secret-results__title-class"> ({{ .Class }})</span>
+        </h3>
+
+        <div class="secret-results__content">
+        {{- $target := .Target }}
+        {{- range .Secrets }}
+        <div class="secret">
+                <div class="secret__head">
+                    <span class="secret__severity severity-{{ .Severity }}"> {{ .Severity }} </span>
+                    <span class="secret__type"> {{.Category}} ({{ .RuleID }})</span>
+                </div>
+                <div class="secret__title"> {{ .Title }}</div>
+                <div class="secret__src">
+                    <span class="secret__src-file">{{ $target}}</span>
+                    <span class="secret__src-delimiter">:</span>
+                    <span class="secret__src-lines">
+                    {{ if eq .StartLine .EndLine }}
+                                {{ .StartLine }}
+                            {{ else }}
+                                {{ .StartLine }} - {{ .EndLine }}
+                            {{ end }}</span>
+                </div>
+                <div class="secret__code">
+                {{- range .Code.Lines }}
+                {{- if .IsCause}}
+                <div class="secret__line secret__line-cause">
+                        <div class="secret__line-number">{{ .Number}}</div>
+                        <div class="secret__line-code">
+                        <pre> {{.Content}}</pre>
+                        </div>
+                    </div>
+                {{- else}}
+                <div class="secret__line">
+                        <div class="secret__line-number">{{ .Number}}</div>
+                        <div class="secret__line-code">
+                        <pre> {{.Content}} </pre>
+                        </div>
+                    </div>
+                {{- end }}
+                {{- end}}
+                </div>
+           </div>
+        </div>
+          {{- end}}
+    </div>
+  {{- end}}
+
+{{- if .Packages }}
+ <div class="header">
+        <h3 class="header__title ta-center">Packages</h3>
+    </div>
+
+    <table>
+        <thead>
+        <tr class="sub-header">
+            <th data-type="string" data-sortable="true"><span> ID </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> Name </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> Version </span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> SrcName </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+            <th data-type="string" data-sortable="true"><span> SrcVersion </span>
+                <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path fill="#444" d="M11 7H5l3-4zM5 9h6l-3 4z"/>
+                </svg>
+            </th>
+
+        </tr>
+          </thead>
+           <tbody data-main="true">
+    {{- range .Packages }}
+        <tr class="filterable">
+            <td class="pkg-version">{{ .ID }}</td>
+            <td class=".pkg-key-name">{{ .Name }}</td>
+            <td class="pkg-key-version ta-center">{{ .Version }}</td>
+            <td class="pkg-key-src-name">{{ .SrcName }}</td>
+            <td class=".pkg-key-src-version">{{ .SrcVersion }}</td>
+        </tr>
+    {{- end}}
+    </tbody>
+    </table>
 {{- end }}
 
 {{- end }}

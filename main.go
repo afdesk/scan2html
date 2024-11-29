@@ -14,7 +14,7 @@ import (
 	"golang.org/x/xerrors"
 )
 
-//go:embed src/html.tpl
+//go:embed template/html.tpl
 var htmlTmpl []byte
 
 func main() {
