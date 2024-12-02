@@ -12,17 +12,17 @@ import (
 )
 
 func main() {
-	rootCmd, err := initFlags()
+	rootCmd, err := initRootCmd()
 	if err != nil {
-		log.Fatalf("%+v", err)
+		log.Fatalf("error initialising root cmd %+v", err)
 	}
 
 	if err = rootCmd.Execute(); err != nil {
-		log.Fatalf("%+v", err)
+		log.Fatalf("executing error %+v", err)
 	}
 }
 
-func initFlags() (*cobra.Command, error) {
+func initRootCmd() (*cobra.Command, error) {
 	var fileName string
 	rootCmd := &cobra.Command{
 		Use: "scan2html",
@@ -33,18 +33,18 @@ func initFlags() (*cobra.Command, error) {
 			return runPlugin(fileName)
 		},
 	}
-	rootCmd.PersistentFlags().StringVar(&fileName, "file", "trivy-report.html", "file to save html report")
+	rootCmd.PersistentFlags().StringVar(&fileName, "output", "trivy-report.html", "file to save html report")
 	return rootCmd, nil
 }
 
 func runPlugin(fileName string) error {
 	inputData, err := io.ReadAll(os.Stdin)
 	if err != nil {
-		return xerrors.Errorf("error reading trivy output: %v\n", err)
+		return xerrors.Errorf("error reading trivy output: %w", err)
 	}
 	err = render.Render(fileName, inputData)
 	if err != nil {
-		return err
+		return xerrors.Errorf("error rendering trivy output: %w", err)
 	}
 
 	return nil

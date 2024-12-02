@@ -1,7 +1,6 @@
 package render
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"testing"
@@ -47,9 +46,7 @@ func TestRender(t *testing.T) {
 			expected, err := os.ReadFile(tt.goldenPath)
 			require.NoError(t, err)
 
-			log.Println(string(expected) == string(actual))
-
-			assert.Equal(t, string(expected), string(actual))
+			assert.Equal(t, expected, actual)
 		})
 	}
 }

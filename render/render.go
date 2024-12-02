@@ -1,7 +1,6 @@
 package render
 
 import (
-	"bytes"
 	_ "embed"
 	"encoding/json"
 	"os"
@@ -15,8 +14,8 @@ import (
 var htmlTmpl []byte
 
 func Render(fileName string, inputData []byte) error {
-	var output types.Report
-	if err := json.NewDecoder(bytes.NewReader(inputData)).Decode(&output); err != nil {
+	var report types.Report
+	if err := json.Unmarshal(inputData, &report); err != nil {
 		return xerrors.Errorf("error decoding body: %v\n", err)
 	}
 
@@ -25,13 +24,13 @@ func Render(fileName string, inputData []byte) error {
 		return xerrors.Errorf("error parsing template: %v\n", err)
 	}
 
-	file, err := os.Create(fileName)
+	output, err := os.Create(fileName)
 	if err != nil {
 		return xerrors.Errorf("error creating file: %v\n", err)
 	}
-	defer file.Close()
+	defer output.Close()
 
-	if err := tmpl.Execute(file, output); err != nil {
+	if err := tmpl.Execute(output, report); err != nil {
 		return xerrors.Errorf("error executing template: %v\n", err)
 	}
 
