@@ -555,7 +555,7 @@
             <td class="vuln">{{ .VulnerabilityID }}</td>
             <td class="severity ta-center">{{ .Vulnerability.Severity }}</td>
             <td class="pkg-version ta-center">{{ .InstalledVersion }}</td>
-            <td>{{ .FixedVersion }}</td>
+            <td class="fixed-version ta-center">{{ .FixedVersion }}</td>
             <td class="links"  data-more-links="off">
                  {{- range .Vulnerability.References }}
                 <a href={{ . | printf "%q" }}>{{ . }}</a>
