@@ -38,7 +38,7 @@ func TestRender(t *testing.T) {
 			data, err := os.ReadFile(tt.jsonPath)
 			require.NoError(t, err)
 
-			err = Render(filename, data)
+			err = Render(filePath, data)
 			require.NoError(t, err)
 
 			actual, err := os.ReadFile(filePath)
