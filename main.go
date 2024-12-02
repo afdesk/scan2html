@@ -25,7 +25,8 @@ func main() {
 func initRootCmd() (*cobra.Command, error) {
 	var fileName string
 	rootCmd := &cobra.Command{
-		Use: "scan2html",
+		Use:   "scan2html",
+		Short: "A Trivy plugin that scans and outputs the results to a html file.",
 		CompletionOptions: cobra.CompletionOptions{
 			DisableDefaultCmd: true,
 		},
