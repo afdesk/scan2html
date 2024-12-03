@@ -1,0 +1,355 @@
+{
+  "Results": [
+    {
+      "Target": "alpine:latest",
+      "Class": "os-pkgs",
+      "Type": "alpine",
+      "Vulnerabilities": [
+        {
+          "VulnerabilityID": "CVE-2024-9143",
+          "PkgID": "libcrypto3@3.3.2-r0",
+          "PkgName": "libcrypto3",
+          "PkgIdentifier": {
+            "PURL": "pkg:apk/alpine/libcrypto3@3.3.2-r0?arch=x86_64\u0026distro=3.20.3",
+            "UID": "33eb4551a5ab015e"
+          },
+          "InstalledVersion": "3.3.2-r0",
+          "FixedVersion": "3.3.2-r1",
+          "Status": "fixed",
+          "Layer": {
+            "Digest": "sha256:43c4264eed91be63b206e17d93e75256a6097070ce643c5e8f0379998b44f170",
+            "DiffID": "sha256:63ca1fbb43ae5034640e5e6cb3e083e05c290072c5366fcaa9d62435a4cced85"
+          },
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-9143",
+          "DataSource": {
+            "ID": "alpine",
+            "Name": "Alpine Secdb",
+            "URL": "https://secdb.alpinelinux.org/"
+          },
+          "Title": "openssl: Low-level invalid GF(2^m) parameters lead to OOB memory access",
+          "Description": "Issue summary: Use of the low-level GF(2^m) elliptic curve APIs with untrusted\nexplicit values for the field polynomial can lead to out-of-bounds memory reads\nor writes.\n\nImpact summary: Out of bound memory writes can lead to an application crash or\neven a possibility of a remote code execution, however, in all the protocols\ninvolving Elliptic Curve Cryptography that we're aware of, either only \"named\ncurves\" are supported, or, if explicit curve parameters are supported, they\nspecify an X9.62 encoding of binary (GF(2^m)) curves that can't represent\nproblematic input values. Thus the likelihood of existence of a vulnerable\napplication is low.\n\nIn particular, the X9.62 encoding is used for ECC keys in X.509 certificates,\nso problematic inputs cannot occur in the context of processing X.509\ncertificates.  Any problematic use-cases would have to be using an \"exotic\"\ncurve encoding.\n\nThe affected APIs include: EC_GROUP_new_curve_GF2m(), EC_GROUP_new_from_params(),\nand various supporting BN_GF2m_*() functions.\n\nApplications working with \"exotic\" explicit binary (GF(2^m)) curve parameters,\nthat make it possible to represent invalid field polynomials with a zero\nconstant term, via the above or similar APIs, may terminate abruptly as a\nresult of reading or writing outside of array bounds.  Remote code execution\ncannot easily be ruled out.\n\nThe FIPS modules in 3.3, 3.2, 3.1 and 3.0 are not affected by this issue.",
+          "Severity": "LOW",
+          "CweIDs": [
+            "CWE-787"
+          ],
+          "VendorSeverity": {
+            "redhat": 1,
+            "ubuntu": 1
+          },
+          "CVSS": {
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+              "V3Score": 3.7
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-9143",
+            "https://github.com/openssl/openssl/commit/72ae83ad214d2eef262461365a1975707f862712",
+            "https://github.com/openssl/openssl/commit/bc7e04d7c8d509fb78fc0e285aa948fb0da04700",
+            "https://github.com/openssl/openssl/commit/c0d3e4d32d2805f49bec30547f225bc4d092e1f4",
+            "https://github.com/openssl/openssl/commit/fdf6723362ca51bd883295efe206cb5b1cfa5154",
+            "https://github.openssl.org/openssl/extended-releases/commit/8efc0cbaa8ebba8e116f7b81a876a4123594d86a",
+            "https://github.openssl.org/openssl/extended-releases/commit/9d576994cec2b7aa37a91740ea7e680810957e41",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-9143",
+            "https://openssl-library.org/news/secadv/20241016.txt",
+            "https://www.cve.org/CVERecord?id=CVE-2024-9143"
+          ],
+          "PublishedDate": "2024-10-16T17:15:18.13Z",
+          "LastModifiedDate": "2024-10-18T12:53:04.627Z"
+        },
+        {
+          "VulnerabilityID": "CVE-2024-9143",
+          "PkgID": "libssl3@3.3.2-r0",
+          "PkgName": "libssl3",
+          "PkgIdentifier": {
+            "PURL": "pkg:apk/alpine/libssl3@3.3.2-r0?arch=x86_64\u0026distro=3.20.3",
+            "UID": "aa5719d6e39bba43"
+          },
+          "InstalledVersion": "3.3.2-r0",
+          "FixedVersion": "3.3.2-r1",
+          "Status": "fixed",
+          "Layer": {
+            "Digest": "sha256:43c4264eed91be63b206e17d93e75256a6097070ce643c5e8f0379998b44f170",
+            "DiffID": "sha256:63ca1fbb43ae5034640e5e6cb3e083e05c290072c5366fcaa9d62435a4cced85"
+          },
+          "PrimaryURL": "https://avd.aquasec.com/nvd/cve-2024-9143",
+          "DataSource": {
+            "ID": "alpine",
+            "Name": "Alpine Secdb",
+            "URL": "https://secdb.alpinelinux.org/"
+          },
+          "Title": "openssl: Low-level invalid GF(2^m) parameters lead to OOB memory access",
+          "Description": "Issue summary: Use of the low-level GF(2^m) elliptic curve APIs with untrusted\nexplicit values for the field polynomial can lead to out-of-bounds memory reads\nor writes.\n\nImpact summary: Out of bound memory writes can lead to an application crash or\neven a possibility of a remote code execution, however, in all the protocols\ninvolving Elliptic Curve Cryptography that we're aware of, either only \"named\ncurves\" are supported, or, if explicit curve parameters are supported, they\nspecify an X9.62 encoding of binary (GF(2^m)) curves that can't represent\nproblematic input values. Thus the likelihood of existence of a vulnerable\napplication is low.\n\nIn particular, the X9.62 encoding is used for ECC keys in X.509 certificates,\nso problematic inputs cannot occur in the context of processing X.509\ncertificates.  Any problematic use-cases would have to be using an \"exotic\"\ncurve encoding.\n\nThe affected APIs include: EC_GROUP_new_curve_GF2m(), EC_GROUP_new_from_params(),\nand various supporting BN_GF2m_*() functions.\n\nApplications working with \"exotic\" explicit binary (GF(2^m)) curve parameters,\nthat make it possible to represent invalid field polynomials with a zero\nconstant term, via the above or similar APIs, may terminate abruptly as a\nresult of reading or writing outside of array bounds.  Remote code execution\ncannot easily be ruled out.\n\nThe FIPS modules in 3.3, 3.2, 3.1 and 3.0 are not affected by this issue.",
+          "Severity": "LOW",
+          "CweIDs": [
+            "CWE-787"
+          ],
+          "VendorSeverity": {
+            "redhat": 1,
+            "ubuntu": 1
+          },
+          "CVSS": {
+            "redhat": {
+              "V3Vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L",
+              "V3Score": 3.7
+            }
+          },
+          "References": [
+            "https://access.redhat.com/security/cve/CVE-2024-9143",
+            "https://github.com/openssl/openssl/commit/72ae83ad214d2eef262461365a1975707f862712",
+            "https://github.com/openssl/openssl/commit/bc7e04d7c8d509fb78fc0e285aa948fb0da04700",
+            "https://github.com/openssl/openssl/commit/c0d3e4d32d2805f49bec30547f225bc4d092e1f4",
+            "https://github.com/openssl/openssl/commit/fdf6723362ca51bd883295efe206cb5b1cfa5154",
+            "https://github.openssl.org/openssl/extended-releases/commit/8efc0cbaa8ebba8e116f7b81a876a4123594d86a",
+            "https://github.openssl.org/openssl/extended-releases/commit/9d576994cec2b7aa37a91740ea7e680810957e41",
+            "https://nvd.nist.gov/vuln/detail/CVE-2024-9143",
+            "https://openssl-library.org/news/secadv/20241016.txt",
+            "https://www.cve.org/CVERecord?id=CVE-2024-9143"
+          ],
+          "PublishedDate": "2024-10-16T17:15:18.13Z",
+          "LastModifiedDate": "2024-10-18T12:53:04.627Z"
+        }
+      ],
+
+      "Packages": [
+        {
+          "ID": "libfreetype6@2.13.2+dfsg-1build3",
+          "Name": "libfreetype6",
+          "Identifier": {
+            "PURL": "pkg:deb/ubuntu/libfreetype6@2.13.2%2Bdfsg-1build3?arch=amd64\u0026distro=ubuntu-24.04",
+            "UID": "29c9b32733f1a02d"
+          },
+          "Version": "2.13.2+dfsg",
+          "Release": "1build3",
+          "Arch": "amd64",
+          "SrcName": "freetype",
+          "SrcVersion": "2.13.2+dfsg",
+          "SrcRelease": "1build3",
+          "Licenses": [
+            "FTL",
+            "MIT",
+            "BSD-3-Clause",
+            "FSFAP",
+            "GPL-3.0-or-later",
+            "GPL-2.0-or-later",
+            "Public-Domain",
+            "MIT-SMC",
+            "BSL-1.0",
+            "MIT-Modern-Variant",
+            "Zlib",
+            "OpenGroup-MIT",
+            "GPL-2.0-only",
+            "GPL-3.0-only"
+          ],
+          "Maintainer": "Ubuntu Developers \u003cubuntu-devel-discuss@lists.ubuntu.com\u003e",
+          "DependsOn": [
+            "libbrotli1@1.1.0-2build2",
+            "libbz2-1.0@1.0.8-5.1build0.1",
+            "libc6@2.39-0ubuntu8.3",
+            "libpng16-16t64@1.6.43-5build1",
+            "zlib1g@1:1.3.dfsg-3.1ubuntu2"
+          ],
+          "Layer": {
+            "DiffID": "sha256:7b872bc9fea5cc58f2c8125159e1bfef1948c580d0a41de0086c2e7918a76b80"
+          },
+          "InstalledFiles": [
+            "/usr/lib/x86_64-linux-gnu/libfreetype.so.6",
+            "/usr/lib/x86_64-linux-gnu/libfreetype.so.6.20.1",
+            "/usr/share/doc/libfreetype6/README",
+            "/usr/share/doc/libfreetype6/changelog.Debian.gz",
+            "/usr/share/doc/libfreetype6/copyright"
+          ]
+        },
+        {
+          "ID": "libgcc-s1@14-20240412-0ubuntu1",
+          "Name": "libgcc-s1",
+          "Identifier": {
+            "PURL": "pkg:deb/ubuntu/libgcc-s1@14-20240412-0ubuntu1?arch=amd64\u0026distro=ubuntu-24.04",
+            "UID": "d304187ce4fbc624"
+          },
+          "Version": "14-20240412",
+          "Release": "0ubuntu1",
+          "Arch": "amd64",
+          "SrcName": "gcc-14",
+          "SrcVersion": "14-20240412",
+          "SrcRelease": "0ubuntu1",
+          "Maintainer": "Ubuntu Core developers \u003cubuntu-devel-discuss@lists.ubuntu.com\u003e",
+          "DependsOn": [
+            "gcc-14-base@14-20240412-0ubuntu1",
+            "libc6@2.39-0ubuntu8.3"
+          ],
+          "Layer": {
+            "DiffID": "sha256:f36fd4bb7334b7ae3321e3229d103c4a3e7c10a263379cc6a058b977edfb46de"
+          },
+          "InstalledFiles": [
+            "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+            "/usr/share/doc/libgcc-s1",
+            "/usr/share/lintian/overrides/libgcc-s1"
+          ]
+        }
+      ]
+    },
+    {
+      "Target": "alpine:latest",
+      "Class": "os-pkgs",
+      "Type": "alpine",
+      "Misconfigurations": [
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS001",
+          "AVDID": "AVD-DS-0001",
+          "Title": "':latest' tag used",
+          "Description": "When using a 'FROM' statement you should use a specific tag to avoid uncontrolled behavior when the image is updated.",
+          "Message": "Specify a tag in the 'FROM' statement for image 'ansibleplaybookbundle/apb-base'",
+          "Namespace": "builtin.dockerfile.DS001",
+          "Query": "data.builtin.dockerfile.DS001.deny",
+          "Resolution": "Add a tag to the image in the 'FROM' statement",
+          "Severity": "MEDIUM",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ds001",
+          "References": [
+            "https://avd.aquasec.com/misconfig/ds001"
+          ],
+          "Status": "FAIL",
+          "Layer": {
+            "Digest": "sha256:a7903a792b0553b036f428af5d26f17e84bff3681ea6473c12b69ea02f58ef1d",
+            "DiffID": "sha256:bc7b05dae0335f636260e0da80e6ad0679747017134a422d1feb885fa961079a"
+          },
+          "CauseMetadata": {
+            "Provider": "Dockerfile",
+            "Service": "general",
+            "StartLine": 1,
+            "EndLine": 1,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 1,
+                  "Content": "FROM ansibleplaybookbundle/apb-base",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "FROM ansibleplaybookbundle/apb-base",
+                  "FirstCause": true,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS011",
+          "AVDID": "AVD-DS-0011",
+          "Title": "COPY with more than two arguments not ending with slash",
+          "Description": "When a COPY command has more than two arguments, the last one should end with a slash.",
+          "Message": "Slash is expected at the end of COPY command argument '}}'",
+          "Namespace": "builtin.dockerfile.DS011",
+          "Query": "data.builtin.dockerfile.DS011.deny",
+          "Resolution": "Add slash to last COPY argument",
+          "Severity": "CRITICAL",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ds011",
+          "References": [
+            "https://docs.docker.com/engine/reference/builder/#copy",
+            "https://avd.aquasec.com/misconfig/ds011"
+          ],
+          "Status": "FAIL",
+          "Layer": {
+            "Digest": "sha256:a7903a792b0553b036f428af5d26f17e84bff3681ea6473c12b69ea02f58ef1d",
+            "DiffID": "sha256:bc7b05dae0335f636260e0da80e6ad0679747017134a422d1feb885fa961079a"
+          },
+          "CauseMetadata": {
+            "Provider": "Dockerfile",
+            "Service": "general",
+            "StartLine": 7,
+            "EndLine": 7,
+            "Code": {
+              "Lines": [
+                {
+                  "Number": 7,
+                  "Content": "COPY . /opt/ansible/roles/{{ role_name }}",
+                  "IsCause": true,
+                  "Annotation": "",
+                  "Truncated": false,
+                  "Highlighted": "COPY . /opt/ansible/roles/{{ role_name }}",
+                  "FirstCause": true,
+                  "LastCause": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Type": "Dockerfile Security Check",
+          "ID": "DS026",
+          "AVDID": "AVD-DS-0026",
+          "Title": "No HEALTHCHECK defined",
+          "Description": "You should add HEALTHCHECK instruction in your docker container images to perform the health check on running containers.",
+          "Message": "Add HEALTHCHECK instruction in your Dockerfile",
+          "Namespace": "builtin.dockerfile.DS026",
+          "Query": "data.builtin.dockerfile.DS026.deny",
+          "Resolution": "Add HEALTHCHECK instruction in Dockerfile",
+          "Severity": "LOW",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ds026",
+          "References": [
+            "https://blog.aquasec.com/docker-security-best-practices",
+            "https://avd.aquasec.com/misconfig/ds026"
+          ],
+          "Status": "FAIL",
+          "Layer": {
+            "Digest": "sha256:a7903a792b0553b036f428af5d26f17e84bff3681ea6473c12b69ea02f58ef1d",
+            "DiffID": "sha256:bc7b05dae0335f636260e0da80e6ad0679747017134a422d1feb885fa961079a"
+          },
+          "CauseMetadata": {
+            "Provider": "Dockerfile",
+            "Service": "general",
+            "Code": {
+              "Lines": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "Target": "/etc/ssl/private/ssl-cert-snakeoil.key",
+      "Class": "secret",
+      "Secrets": [
+        {
+          "RuleID": "private-key",
+          "Category": "AsymmetricPrivateKey",
+          "Severity": "HIGH",
+          "Title": "Asymmetric Private Key",
+          "StartLine": 1,
+          "EndLine": 1,
+          "Code": {
+            "Lines": [
+              {
+                "Number": 1,
+                "Content": "-----BEGIN PRIVATE KEY-----*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY",
+                "IsCause": true,
+                "Annotation": "",
+                "Truncated": false,
+                "Highlighted": "-----BEGIN PRIVATE KEY-----*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY",
+                "FirstCause": true,
+                "LastCause": true
+              },
+              {
+                "Number": 2,
+                "Content": "",
+                "IsCause": false,
+                "Annotation": "",
+                "Truncated": false,
+                "FirstCause": false,
+                "LastCause": false
+              }
+            ]
+          },
+          "Match": "-----BEGIN PRIVATE KEY-----*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************-----END PRIVATE KEY",
+          "Layer": {
+            "Digest": "sha256:0c57df616dbf8a5b9046359879d7cd6fc9cef5ec09b9aa407a9f0a278764ab9e",
+            "DiffID": "sha256:80f9a8427b1826f014f873dc471b6a89916ff79550bcd1c94aadd78c3f5bbdc7",
+            "CreatedBy": "apt-get update \u0026\u0026     apt-get upgrade -y \u0026\u0026     DEBIAN_FRONTEND=noninteractive apt-get install -y     debconf-utils \u0026\u0026     echo mariadb-server mysql-server/root_password password vulnerables | debconf-set-selections \u0026\u0026     echo mariadb-server mysql-server/root_password_again password vulnerables | debconf-set-selections \u0026\u0026     DEBIAN_FRONTEND=noninteractive apt-get install -y     apache2     mariadb-server     php     php-mysql     php-pgsql     php-pear     php-gd     \u0026\u0026     apt-get clean \u0026\u0026     rm -rf /var/lib/apt/lists/*"
+          }
+        }
+      ]
+    }
+  ]
+}
