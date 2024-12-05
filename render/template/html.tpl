@@ -490,8 +490,8 @@
 </head>
 <body>
 <main id="root">
-{{- if .Results }}
-    <h1 id="report-title">Trivy Report - <span class="report-title__target"> {{ ( index .Results 0 ).Target }}</span>
+{{- if . }}
+    <h1 id="report-title">Trivy Report - <span class="report-title__target"> {{ ( index . 0 ).Target }}</span>
     </h1>
     <div class="filter_bar">
         <input type="text" placeholder="Search.."
@@ -500,7 +500,7 @@
     </div>
 
 
-{{- range .Results }}
+{{- range . }}
 {{- if or .Vulnerabilities .Misconfigurations .Secrets}}
     <div class="header">
         <h3 class="header__title ta-center"> {{ .Target}} </h3>
