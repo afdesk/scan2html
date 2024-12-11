@@ -1,4 +1,4 @@
-module github.com/afdesk/scan2html
+module github.com/afdesk/trivy-html
 
 go 1.23.3
 
