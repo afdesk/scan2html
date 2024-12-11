@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/xerrors"
 
-	"github.com/afdesk/scan2html/render"
+	"github.com/afdesk/trivy-html/render"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 func initRootCmd() (*cobra.Command, error) {
 	var fileName string
 	rootCmd := &cobra.Command{
-		Use:   "scan2html",
+		Use:   "trivy-html",
 		Short: "A Trivy plugin that scans and outputs the results to a html file.",
 		CompletionOptions: cobra.CompletionOptions{
 			DisableDefaultCmd: true,
