@@ -847,7 +847,6 @@
     const codeNode = 1 << 1;
     const occurrenceNode = 1 << 2;
     let inWindow = false;
-    let isGraphInitializing = false;
     let currentTable;
     let cy = cytoscape({
         container: document.querySelector('.graph'),
