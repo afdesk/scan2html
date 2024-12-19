@@ -31,7 +31,13 @@ func Render(fileName string, inputData []byte) error {
 		results = append(results, resource.Results...)
 	}
 
-	tmpl, err := template.New("temp").Parse(string(htmlTmpl))
+	tmpl, err := template.New("temp").Funcs(template.FuncMap{
+		"toJSON": func(v interface{}) (string, error) {
+			bytes, err := json.Marshal(v)
+			return string(bytes), err
+		},
+	}).Parse(string(htmlTmpl))
+
 	if err != nil {
 		return xerrors.Errorf("error parsing template: %v\n", err)
 	}
