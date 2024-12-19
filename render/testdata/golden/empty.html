@@ -543,11 +543,7 @@
     hljs.registerLanguage('hcl', window.hljsDefineTerraform);
 </script>
 <script defer>
-    const report = {
-  "Results": [
-  ]
-}
-;
+    const results = [];
     const codeNode = 1 << 1;
     const occurrenceNode = 1 << 2;
     let inWindow = false;
@@ -639,15 +635,6 @@
 
             });
 
-        }
-
-        let results = [];
-        if (report.Resources) {
-            report.Resources.forEach((resource) => {
-                results.push(...resource.Results);
-            });
-        } else {
-            results = report.Results;
         }
 
         results.forEach((result, index) => {

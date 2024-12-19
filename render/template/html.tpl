@@ -447,8 +447,8 @@
 </head>
 <body>
 
-{{- if .Results }}
-<h1 id="report-title">Trivy Report - <span class="report-title__target"> {{ ( index .Results 0 ).Target }}</span>
+{{- if . }}
+<h1 id="report-title">Trivy Report - <span class="report-title__target"> {{ ( index . 0 ).Target }}</span>
 </h1>
 <div class="filter_bar">
     <input type="text" placeholder="Search.."
@@ -487,7 +487,7 @@
 
 <div id="info"></div>
 
-{{- range $resultIndex, $result := .Results }}
+{{- range $resultIndex, $result := . }}
 {{- if or .Vulnerabilities .Misconfigurations .Secrets}}
 
 <div class="header">
@@ -843,7 +843,7 @@
     hljs.registerLanguage('hcl', window.hljsDefineTerraform);
 </script>
 <script defer>
-    const report = {{ .JsonData}};
+    const results = {{ . | toJSON}};
     const codeNode = 1 << 1;
     const occurrenceNode = 1 << 2;
     let inWindow = false;
@@ -935,15 +935,6 @@
 
             });
 
-        }
-
-        let results = [];
-        if (report.Resources) {
-            report.Resources.forEach((resource) => {
-                results.push(...resource.Results);
-            });
-        } else {
-            results = report.Results;
         }
 
         results.forEach((result, index) => {
