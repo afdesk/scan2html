@@ -14,6 +14,11 @@ import (
 //go:embed template/html.tpl
 var htmlTmpl []byte
 
+type Data struct {
+	Results  types.Results
+	JsonData string // For js script into template
+}
+
 func Render(fileName string, inputData []byte) error {
 	var kubernetes k8s.Report
 	var report types.Report
@@ -25,10 +30,10 @@ func Render(fileName string, inputData []byte) error {
 	if err := json.Unmarshal(inputData, &report); err != nil {
 		return xerrors.Errorf("error decoding body: %v\n", err)
 	}
+	data := Data{Results: report.Results, JsonData: string(inputData)}
 
-	results := report.Results
 	for _, resource := range kubernetes.Resources {
-		results = append(results, resource.Results...)
+		data.Results = append(data.Results, resource.Results...)
 	}
 
 	tmpl, err := template.New("temp").Parse(string(htmlTmpl))
@@ -42,7 +47,7 @@ func Render(fileName string, inputData []byte) error {
 	}
 	defer output.Close()
 
-	if err = tmpl.Execute(output, results); err != nil {
+	if err = tmpl.Execute(output, data); err != nil {
 		return xerrors.Errorf("error executing template: %v\n", err)
 	}
 

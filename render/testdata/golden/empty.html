@@ -10,6 +10,11 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
+        body {
+            height: 100vh;
+            width: 99vw;
+        }
+
         h1, h2 {
             text-align: center;
         }
@@ -41,17 +46,28 @@
         table,
         th,
         td {
-            border-bottom: 1px solid #0000001f;
+            width: 100%;
+            border-top: 1px solid #0000001f;
             border-collapse: collapse;
             padding: .3em;
             white-space: normal;
         }
 
         table {
-            margin: 0 auto;
+            margin-left: 0;
             table-layout: fixed;
-            width: 100%;
-            border: 1px solid #ddd;
+            border: 2px solid #ddd;
+        }
+
+        .placeholder-row td {
+            height: 30px;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .last-data-row td {
+            border-bottom: none;
         }
 
         .severity {
@@ -233,150 +249,724 @@
             display: none;
         }
 
-        .tree {
-            --spacing: 1.5rem;
-            --radius: 10px;
-            font-size: 20px;
-            margin-top: 10px;
+        .target-item {
+            margin-bottom: 10px;
         }
 
-        .tree li {
+        .target-item:hover {
+            background-color: #7d7d7d;
+        }
+
+        .sidebar li > ul {
+            display: none;
+            /* padding-left: 20px; */
+        }
+
+        .sidebar li.active > ul {
             display: block;
+        }
+
+        .graph {
+            flex-grow: 1;
+            background-color: #ecf0f1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            flex-direction: column;
+            flex: 1 1 auto;
+            display: none;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+
+        .movable-content {
+            padding: 10px;
+            height: 100%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .graph-buttons button,
+        .open-window-button
+        {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .graph-buttons{
+            flex-direction: row;
+            display: flex;
+        }
+
+        .content-header {
             position: relative;
-            padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+            display: flex;
+            justify-content: space-between;
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            user-select: none;
         }
 
-        .tree ul {
-            margin-left: calc(var(--radius) - var(--spacing));
-            padding-left: 0;
-        }
-
-        .tree ul li {
-            border-left: 2px solid #ddd;
-        }
-
-        .tree ul li:last-child {
-            border-color: transparent;
-        }
-
-        .tree ul li::before {
-            content: '';
-            display: block;
-            position: absolute;
-            top: calc(var(--spacing) / -2);
-            left: -2px;
-            width: calc(var(--spacing) + 8px);
-            height: calc(var(--spacing) + -1px);
-            border: solid #ddd;
-            border-width: 0 0 2px 2px;
-        }
-
-        .tree .dependency-tree-node__title {
-            display: block;
-        }
-
-        .tree .dependency-tree-node__title::marker,
-        .tree .dependency-tree-node__title::-webkit-details-marker {
+        #movable-window {
+            position: fixed;
+            top: 2%;
+            right: 3%;
+            width: 30%;
+            height: 50%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
             display: none;
         }
 
-        .tree .dependency-tree-node__title:focus {
-            outline: none;
+
+        #movable-window.hidden {
+            height: auto;
+            min-height: unset;
+            overflow: hidden;
         }
 
-        .tree .dependency-tree-node__title:focus-visible {
-            outline: 1px dotted #000;
+        #movable-window.hidden .movable-content {
+            display: none;
         }
 
-        .dependency-tree-node__dots {
-            font-size: 22px;
-            border: 1px solid #e1e1e1;
-            background: #e0e0e0;
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            text-align: center;
-            border-radius: 5px;
-            line-height: 11px;
-            cursor: pointer;
-
-            position: relative;
-            z-index: 2;
+        .container {
+            padding-bottom: 10px;
+            flex-direction: row;
+            width: 100%;
+            display: flex;
+            overflow: hidden;
         }
 
-        .tree > li > ul.dependency-tree-node__children.original > li > span {
-            color: #e40000;
+        #info {
+            display: none;
+            z-index: 1000;
+            position: absolute;
+            background: white;
+            border: 1px solid black;
+            padding: 5px;
+            left: 599px;
+            top: 359px;
         }
 
-        .dependency-tree__title {
-            margin-bottom: 0;
+        pre code.hljs {
+            display: block;
+            overflow-x: auto;
+            padding: 1em
         }
 
-        .dependency-tree__description {
-            font-size: 24px;
+        code.hljs {
+            padding: 3px 5px
+        }
+
+        /*!
+                  Theme: GitHub
+                  Description: Light theme as seen on github.com
+                  Author: github.com
+                  Maintainer: @Hirse
+                  Updated: 2021-05-15
+
+                  Outdated base version: https://github.com/primer/github-syntax-light
+                  Current colors taken from GitHub's CSS
+                */
+        .hljs {
+            color: #24292e;
+            background: #fff
+        }
+
+        .hljs-doctag, .hljs-keyword, .hljs-meta .hljs-keyword, .hljs-template-tag, .hljs-template-variable, .hljs-type, .hljs-variable.language_ {
+            color: #d73a49
+        }
+
+        .hljs-title, .hljs-title.class_, .hljs-title.class_.inherited__, .hljs-title.function_ {
+            color: #6f42c1
+        }
+
+        .hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number, .hljs-operator, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id, .hljs-variable {
+            color: #005cc5
+        }
+
+        .hljs-meta .hljs-string, .hljs-regexp, .hljs-string {
+            color: #032f62
+        }
+
+        .hljs-built_in, .hljs-symbol {
+            color: #e36209
+        }
+
+        .hljs-code, .hljs-comment, .hljs-formula {
+            color: #6a737d
+        }
+
+        .hljs-name, .hljs-quote, .hljs-selector-pseudo, .hljs-selector-tag {
+            color: #22863a
+        }
+
+        .hljs-subst {
+            color: #24292e
+        }
+
+        .hljs-section {
+            color: #005cc5;
+            font-weight: 700
+        }
+
+        .hljs-bullet {
+            color: #735c0f
+        }
+
+        .hljs-emphasis {
+            color: #24292e;
+            font-style: italic
+        }
+
+        .hljs-strong {
+            color: #24292e;
+            font-weight: 700
+        }
+
+        .hljs-addition {
+            color: #22863a;
+            background-color: #f0fff4
+        }
+
+        .hljs-deletion {
+            color: #b31d28;
+            background-color: #ffeef0
         }
     </style>
+</head>
+<body>
+<h2> Trivy Returned Empty Report</h2>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-            const now = new Date();
-            const currentTime = now.toLocaleTimeString();
-            const currentDate = now.toLocaleDateString();
-            document.getElementById("current-time").textContent += `${currentDate} ${currentTime}`;
-            });
-        </script>
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+    /*
+     * highlight.js terraform syntax highlighting definition
+     *
+     * @see https://github.com/highlightjs/highlight.js
+     *
+     * :TODO:
+     *
+     * @package: highlightjs-terraform
+     * @author:  Nikos Tsirmirakis <nikos.tsirmirakis@winopsdba.com>
+     * @since:   2019-03-20
+     *
+     * Description: Terraform (HCL) language definition
+     * Category: scripting
+     */
 
-        <script>
-        function insertAfter(referenceNode, newNode) {
-          referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-        }
+    var module = module ? module : {};     // shim for browser use
 
-        const severityOrder = {
-          UNKNOWN: { order: 5 },
-          LOW: { order: 4 },
-          MEDIUM: { order: 3 },
-          HIGH: { order: 2 },
-          CRITICAL: { order: 1 },
+    function hljsDefineTerraform(hljs) {
+        var NUMBERS = {
+            className: 'number',
+            begin: '\\b\\d+(\\.\\d+)?',
+            relevance: 0
+        };
+        var STRINGS = {
+            className: 'string',
+            begin: '"',
+            end: '"',
+            contains: [{
+                className: 'variable',
+                begin: '\\${',
+                end: '\\}',
+                relevance: 9,
+                contains: [{
+                    className: 'string',
+                    begin: '"',
+                    end: '"'
+                }, {
+                    className: 'meta',
+                    begin: '[A-Za-z_0-9]*' + '\\(',
+                    end: '\\)',
+                    contains: [
+                        NUMBERS, {
+                            className: 'string',
+                            begin: '"',
+                            end: '"',
+                            contains: [{
+                                className: 'variable',
+                                begin: '\\${',
+                                end: '\\}',
+                                contains: [{
+                                    className: 'string',
+                                    begin: '"',
+                                    end: '"',
+                                    contains: [{
+                                        className: 'variable',
+                                        begin: '\\${',
+                                        end: '\\}'
+                                    }]
+                                }, {
+                                    className: 'meta',
+                                    begin: '[A-Za-z_0-9]*' + '\\(',
+                                    end: '\\)'
+                                }]
+                            }]
+                        },
+                        'self']
+                }]
+            }]
         };
 
-        function attachLinksInteractivity() {
-          document.querySelectorAll("td.links").forEach(function (linkCell) {
-            const links = [].concat.apply([], linkCell.querySelectorAll("a"));
-            [].sort.apply(links, function (a, b) {
-              return a.href > b.href ? 1 : -1;
-            });
-            links.forEach(function (link, idx) {
-              if (links.length > 0 && 0 === idx) {
-                const toggleLink = document.createElement("a");
-                toggleLink.innerText = "Toggle more links";
-                toggleLink.href = "#toggleMore";
-                toggleLink.setAttribute("class", "toggle-more-links");
-                linkCell.appendChild(toggleLink);
-              }
-              linkCell.appendChild(link);
-            });
-          });
+        return {
+            aliases: ['tf', 'hcl'],
+            keywords: 'resource variable provider output locals module data terraform|10',
+            literal: 'false true null',
+            contains: [
+                hljs.COMMENT('\\#', '$'),
+                NUMBERS,
+                STRINGS
+            ]
+        }
+    }
 
-          document
-              .querySelectorAll("a.toggle-more-links")
-              .forEach(function (toggleLink) {
-                toggleLink.onclick = function () {
-                  const expanded =
-                      toggleLink.parentElement.getAttribute("data-more-links");
-                  toggleLink.parentElement.setAttribute(
-                      "data-more-links",
-                      "on" === expanded ? "off" : "on"
-                  );
-                  return false;
-                };
-              });
+    module.exports = function (hljs) {
+        hljs.registerLanguage('terraform', hljsDefineTerraform);
+    };
+
+    module.exports.definer = hljsDefineTerraform;
+</script>
+<script type="text/javascript">
+    hljs.registerLanguage('hcl', window.hljsDefineTerraform);
+</script>
+<script defer>
+    const report = {
+  "Results": [
+  ]
+}
+;
+    const codeNode = 1 << 1;
+    const occurrenceNode = 1 << 2;
+    let inWindow = false;
+    let isGraphInitializing = false;
+    let currentTable;
+    let cy = cytoscape({
+        container: document.querySelector('.graph'),
+        elements: [],
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    label: 'data(label)',
+                    'background-color': '#666',
+                    color: '#000',
+                    'text-valign': 'center',
+                    'text-halign': 'center',
+                    width: '80px',
+                    height: '80px',
+                },
+            },
+            {
+                selector: `node[type=${codeNode}]`,
+                style: {
+                    'background-color': '#c8c8c8',
+                    'font-size': '14px',
+                    'text-valign': 'center',
+                    'text-halign': 'center',
+                },
+            },
+            {
+                selector: `node[type=${occurrenceNode}]`,
+                style: {'background-color': '#1E90FF'},
+            },
+            {
+                selector: 'edge',
+                style: {
+                    label: 'data(label)',
+                    width: 3,
+                    'line-color': '#ccc',
+                    'curve-style': 'bezier',
+                    'target-arrow-color': 'black',
+                    'target-arrow-shape': 'triangle',
+                },
+            },
+        ],
+        layout: {
+            name: 'cose',
+        },
+    });
+
+    async function init() {
+        function createSublist(tableIndex, misconfigurations) {
+            const table = document.querySelector(`.misc-table[data-index = "${tableIndex}"]`);
+            const content = document.querySelector(`.content[data-index = "${tableIndex}"]`)
+            const allContent = document.querySelectorAll('.content');
+            const allTables = document.querySelectorAll('table');
+            const info = document.getElementById('info');
+
+            misconfigurations.forEach((misconfig, idx) => {
+                const listItem = document.querySelector(`[data-index="${tableIndex} ${idx}"]`);
+                listItem.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    currentTable = table;
+                    if (!inWindow ) {
+                        changeContainer(tableIndex)
+                        allTables.forEach((table) => {
+                            table.style.width = "100%";
+
+                        });
+
+                        allContent.forEach((item) => {
+                            item.style.display = "none";
+                        });
+                        info.style.position = 'absolute';
+
+                        table.style.width = '70%';
+                        content.style.display = 'flex';
+
+                        removePlaceholderRows();
+                        addPlaceholderRows();
+
+                    } else {
+                        info.style.position = 'fixed';
+                    }
+
+                    info.style.display = "none";
+                    renderGraph(misconfig);
+                });
+
+            });
+
         }
 
-        function attachFilterInteractivity() {
-          const filterBar = document.querySelector(".filter_bar");
-          const nameFilter = filterBar.querySelector(".filter_bar__filter_name");
-          const filterable = document.querySelectorAll(".filterable");
-          const cellClasses = [
+        let results = [];
+        if (report.Resources) {
+            report.Resources.forEach((resource) => {
+                results.push(...resource.Results);
+            });
+        } else {
+            results = report.Results;
+        }
+
+        results.forEach((result, index) => {
+            if (result.Misconfigurations === undefined) {
+                return;
+            }
+
+            createSublist(index, result.Misconfigurations);
+
+        });
+    }
+
+    window.onload = init;
+
+    function addPlaceholderRows() {
+        const rowCount = currentTable.querySelectorAll("tr").length;
+        const targetRows = 10;
+        const placeholderCount = targetRows - rowCount;
+
+        for (let i = 0; i < placeholderCount; i++) {
+            const placeholderRow = document.createElement("tr");
+            placeholderRow.classList.add("placeholder-row");
+            placeholderRow.innerHTML = "<td colspan='5'></td>";
+            currentTable.querySelector("tbody").appendChild(placeholderRow);
+        }
+    }
+
+    function removePlaceholderRows() {
+        const placeholders = document.querySelectorAll(".placeholder-row");
+        placeholders.forEach(row => row.remove());
+    }
+
+    function changeContainer(index) {
+        const newContainer = document.querySelector(`.graph[data-index="${index}"]`);
+
+        const elements = cy.json().elements.nodes ? cy.json().elements : [];
+
+        const style = cy.style().json();
+
+        cy.destroy();
+
+        cy = cytoscape({
+            container: newContainer,
+            elements: elements,
+            style: style,
+            layout: {name: 'cose'}
+        });
+
+        addInfoEventsListening(index);
+    }
+
+    function addInfoEventsListening(index) {
+        cy.on('tap', 'node', function (evt) {
+            const node = evt.target;
+            const infoBox = document.getElementById("info");
+            const graphRect = document.querySelector(`.graph[data-index="${index}"]`).getBoundingClientRect();
+
+            let content = '';
+            if (node.data('type') === codeNode) {
+                content = `<strong>Code Snippet:</strong><br><pre>${node.data('content')}</pre>`;
+            } else if (node.data('type') === occurrenceNode) {
+                content = `<strong>File:</strong> ${node.data('file')}<br><strong>Location:</strong> Lines ${node.data('start')} - ${node.data('end')}`;
+            }
+
+            let top = graphRect.top + evt.renderedPosition.y;
+            let left = window.scrollX + graphRect.left + evt.renderedPosition.x;
+
+            if (!inWindow){
+                top += window.scrollY;
+            }
+
+            infoBox.innerHTML = content;
+            infoBox.style.left = left + 'px';
+            infoBox.style.top = top + 'px';
+            infoBox.style.display = 'block';
+        });
+
+        cy.on('tap', function (event) {
+            if (event.target === cy) {
+                document.getElementById("info").style.display = 'none';
+            }
+        });
+    }
+
+    function renderGraph(misconf) {
+        const nodes = [];
+        const edges = [];
+
+        if (misconf.CauseMetadata === undefined) {
+            return;
+        }
+
+        const findingID = `finding`;
+        if (misconf.CauseMetadata.Code?.Lines !== null) {
+            const code = misconf.CauseMetadata.Code?.Lines.reduce((prev, curr, idx) => {
+                if (idx === 0) {
+                    return curr.Content;
+                }
+                return prev + '\n' + curr.Content;
+            }, '');
+
+            const highlightedCode = hljs.highlight(code, {language: 'hcl'}).value;
+
+            nodes.push({
+                data: {
+                    id: findingID,
+                    label: misconf.CauseMetadata.Resource,
+                    type: codeNode,
+                    content: highlightedCode,
+                },
+            });
+        }
+
+        if (misconf.CauseMetadata.Occurrences !== undefined) {
+            misconf.CauseMetadata.Occurrences.forEach((occurrence, idx) => {
+                const occurenceID = `${idx}-occurrence`;
+                nodes.push({
+                    data: {
+                        id: occurenceID,
+                        label: occurrence.Resource,
+                        type: occurrenceNode,
+                        file: occurrence.Filename,
+                        start: occurrence.Location.StartLine,
+                        end: occurrence.Location.EndLine,
+                    },
+                });
+
+                const edgeID = `${idx}-edge`;
+
+                // the first occurrence is the cause, which is stored in the cause metadata
+                if (idx === 0) {
+                    edges.push({
+                        data: {
+                            id: edgeID,
+                            source: occurenceID,
+                            target: findingID,
+                            label: 'Caused by',
+                        },
+                    });
+                } else {
+                    const targetID = `${idx - 1}-occurrence`;
+
+                    edges.push({
+                        data: {
+                            id: edgeID,
+                            source: occurenceID,
+                            target: targetID,
+                            label: 'Caused by',
+                        },
+                    });
+                }
+            });
+        }
+        cy.elements().remove();
+        cy.add(nodes);
+        cy.add(edges);
+
+        cy.layout({name: 'cose'}).run();
+
+    }
+
+
+    const allTables = document.querySelectorAll('table');
+    const closeContent = document.querySelectorAll('.close-button');
+    const content = document.querySelectorAll('.content');
+    const info = document.getElementById('info');
+    const movableWindow = document.getElementById('movable-window');
+    const hideButton = document.querySelector('.hide-window');
+    const openWindow = document.querySelectorAll('.open-window-button');
+
+    closeContent.forEach((button) => {
+        button.addEventListener('click', () => {
+            info.style.display = 'none';
+            allTables.forEach((table) => {
+                table.style.width = "100%";
+
+            });
+            removePlaceholderRows();
+            content.forEach((item) => {
+                item.style.display = "none";
+            });
+        });
+
+    });
+
+    function closeMovableWindow(){
+        movableWindow.style.display = 'none';
+        info.style.display = 'none';
+        inWindow = false;
+    }
+
+    document.querySelector('.close-window').addEventListener('click', () => {
+       closeMovableWindow();
+    });
+
+    hideButton.addEventListener("click", () => {
+        movableWindow.classList.toggle('hidden');
+        info.style.display = 'none';
+    });
+
+    openWindow.forEach((button) => {
+        button.addEventListener("click", () => {
+            if (inWindow) {
+                inWindow = false;
+                let index = currentTable.getAttribute('data-index');
+                let content = document.querySelector(`.content[data-index = "${index}"]`)
+                closeMovableWindow();
+                changeContainer(index);
+                currentTable.style.width = '70%';
+                info.style.display = 'none';
+                info.style.position = 'absolute';
+                content.style.display = 'flex';
+            }
+            else {
+                inWindow = true;
+                changeContainer("window");
+                removePlaceholderRows();
+
+                allTables.forEach((table) => {
+                    table.style.width = '100%';
+                });
+
+                document.querySelectorAll('.content').forEach((item) => {
+                    item.style.display = "none";
+                });
+
+                info.style.position = 'fixed';
+                info.style.display = 'none';
+
+                movableWindow.style.display = 'block';
+            }
+
+        });
+    });
+
+
+    const header = document.getElementById('movable-header');
+
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    header.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - movableWindow.offsetLeft;
+        offsetY = e.clientY - movableWindow.offsetTop;
+        document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            let newLeft = e.clientX - offsetX;
+            let newTop = e.clientY - offsetY;
+
+            newLeft = Math.max(0, Math.min(window.innerWidth - movableWindow.offsetWidth, newLeft));
+            newTop = Math.max(0, Math.min(window.innerHeight - movableWindow.offsetHeight, newTop));
+
+            movableWindow.style.left = newLeft + 'px';
+            movableWindow.style.top = newTop + 'px';
+
+            cy.resize()
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        document.body.style.userSelect = '';
+    });
+    function insertAfter(referenceNode, newNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+
+    const severityOrder = {
+        UNKNOWN: {order: 5},
+        LOW: {order: 4},
+        MEDIUM: {order: 3},
+        HIGH: {order: 2},
+        CRITICAL: {order: 1},
+    };
+
+    function attachLinksInteractivity() {
+        document.querySelectorAll("td.links").forEach(function (linkCell) {
+            const links = [].concat.apply([], linkCell.querySelectorAll("a"));
+            [].sort.apply(links, function (a, b) {
+                return a.href > b.href ? 1 : -1;
+            });
+            links.forEach(function (link, idx) {
+                if (links.length > 0 && 0 === idx) {
+                    const toggleLink = document.createElement("a");
+                    toggleLink.innerText = "Toggle more links";
+                    toggleLink.href = "#toggleMore";
+                    toggleLink.setAttribute("class", "toggle-more-links");
+                    linkCell.appendChild(toggleLink);
+                }
+                linkCell.appendChild(link);
+            });
+        });
+
+        document
+            .querySelectorAll("a.toggle-more-links")
+            .forEach(function (toggleLink) {
+                toggleLink.onclick = function () {
+                    const expanded =
+                        toggleLink.parentElement.getAttribute("data-more-links");
+                    toggleLink.parentElement.setAttribute(
+                        "data-more-links",
+                        "on" === expanded ? "off" : "on"
+                    );
+                    return false;
+                };
+            });
+    }
+
+    function attachFilterInteractivity() {
+        const filterBar = document.querySelector(".filter_bar");
+        const nameFilter = filterBar.querySelector(".filter_bar__filter_name");
+        const filterable = document.querySelectorAll(".filterable");
+        const cellClasses = [
             ".pkg-name",
             ".vuln",
             ".misc-type",
@@ -387,110 +977,80 @@
             ".pkg-key-version",
             ".pkg-key-src-name",
             ".pkg-key-src-version",
-          ];
+        ];
 
-          function applyFilters(filterValue) {
+        function applyFilters(filterValue) {
             filterable.forEach((f) => {
-              const cellValues = cellClasses
-                  .map((cl) => f.querySelector(cl))
-                  .filter((cell) => cell !== null)
-                  .map((cell) => cell.textContent || cell.innerText);
+                const cellValues = cellClasses
+                    .map((cl) => f.querySelector(cl))
+                    .filter((cell) => cell !== null)
+                    .map((cell) => cell.textContent || cell.innerText);
 
-              const condition = cellValues.some((cellValue) =>
-                  cellValue.toUpperCase().includes(filterValue.toUpperCase())
-              );
+                const condition = cellValues.some((cellValue) =>
+                    cellValue.toUpperCase().includes(filterValue.toUpperCase())
+                );
 
-              f.style.display = condition ? "" : "none";
+                f.style.display = condition ? "" : "none";
             });
-          }
-
-          nameFilter.addEventListener("keyup", (e) => {
-            applyFilters(e.target.value);
-          });
         }
 
-        function attachSortInteractivity() {
-          let colIx = -1;
-          const tables = document.querySelectorAll("table");
-          const sortTable = (tableIx, cellIndex, type, isSorded) => {
+        nameFilter.addEventListener("keyup", (e) => {
+            applyFilters(e.target.value);
+        });
+    }
+
+    function attachSortInteractivity() {
+        let colIx = -1;
+        const tables = document.querySelectorAll("table");
+        const sortTable = (tableIx, cellIndex, type, isSorded) => {
             const table = tables[tableIx];
             const tbody = table.querySelector('tbody[data-main="true"]');
             const thead = table.querySelector("thead");
             const inv = (val) => (isSorded ? -val : val);
             const compare = (a, b) => {
-              const rowA = a.cells[cellIndex].innerHTML;
-              const rowB = b.cells[cellIndex].innerHTML;
-              if (type === "string") {
-                if (rowA < rowB) return inv(-1);
-                if (rowA > rowB) return inv(1);
-                return 0;
-              }
-              if (type === "severity") {
-                const orderA = severityOrder[rowA].order;
-                const orderB = severityOrder[rowB].order;
-                if (orderA < orderB) return inv(-1);
-                if (orderA > orderB) return inv(1);
-                return 0;
-              }
+                if (!a.cells[cellIndex] || !b.cells[cellIndex]) return 0;
+                const rowA = a.cells[cellIndex].innerHTML;
+                const rowB = b.cells[cellIndex].innerHTML;
+                if (type === "string") {
+                    if (rowA < rowB) return inv(-1);
+                    if (rowA > rowB) return inv(1);
+                    return 0;
+                }
+                if (type === "severity") {
+                    const orderA = severityOrder[rowA].order;
+                    const orderB = severityOrder[rowB].order;
+                    if (orderA < orderB) return inv(-1);
+                    if (orderA > orderB) return inv(1);
+                    return 0;
+                }
             };
             let rows = Array(...tbody.rows);
             rows.sort(compare);
             table.removeChild(tbody);
             rows.forEach((row) => {
-              tbody.appendChild(row);
+                tbody.appendChild(row);
             });
             insertAfter(thead, tbody);
-          };
-          tables.forEach((table, tableIx) => {
+        };
+        tables.forEach((table, tableIx) => {
             table.addEventListener("click", (e) => {
-              e.stopPropagation();
-              const el = e.target;
-              const type = el.getAttribute("data-type");
-              const sortable = el.getAttribute("data-sortable") === "true";
-              if (el.nodeName !== "TH" || !sortable) return;
-              const cellIndex = el.cellIndex;
-              sortTable(tableIx, cellIndex, type, colIx === cellIndex);
-              colIx = colIx === cellIndex ? -1 : cellIndex;
+                e.stopPropagation();
+                const el = e.target;
+                const type = el.getAttribute("data-type");
+                const sortable = el.getAttribute("data-sortable") === "true";
+                if (el.nodeName !== "TH" || !sortable) return;
+                const cellIndex = el.cellIndex;
+                sortTable(tableIx, cellIndex, type, colIx === cellIndex);
+                colIx = colIx === cellIndex ? -1 : cellIndex;
             });
-          });
-        }
-
-        function attachDependencyTreeInteractivity() {
-          const collapsable = document.querySelectorAll(".dependency-tree-node__dots");
-
-          collapsable.forEach((col) => {
-            col.addEventListener("click", () => {
-              const topParent = col.closest(
-                  ".tree > li > ul.dependency-tree-node__children.original > .dependency-tree-node__container"
-              );
-              let original, collapsed;
-              for (let i = 0; i < topParent.children.length; i++) {
-                if (topParent.children[i].classList.contains("original")) {
-                  original = topParent.children[i];
-                  continue;
-                }
-                if (topParent.children[i].classList.contains("collapsed")) {
-                  collapsed = topParent.children[i];
-                }
-              }
-              original.classList.remove("hidden");
-              collapsed.classList.add("hidden");
-            });
-          });
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-          attachLinksInteractivity();
-          attachSortInteractivity();
-          attachFilterInteractivity();
-          attachDependencyTreeInteractivity();
         });
+    }
 
-        </script>
-</head>
-<body>
-<main id="root">
-<h2> Trivy Returned Empty Report <h2>
-</main>
+    document.addEventListener("DOMContentLoaded", () => {
+        attachLinksInteractivity();
+        attachSortInteractivity();
+        attachFilterInteractivity();
+    });
+</script>
 </body>
 </html>
