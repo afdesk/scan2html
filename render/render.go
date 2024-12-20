@@ -14,9 +14,6 @@ import (
 	"golang.org/x/xerrors"
 )
 
-//go:embed template/html.tpl
-var htmlTmpl []byte
-
 //go:embed template/*
 var templates embed.FS
 
